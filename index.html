@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="Conecctions/globals.css" />
+    <link rel="stylesheet" href="Conecctions/style.css" />
+    <!-- 1. Enlazamos el nuevo archivo de JavaScript -->
+    <script src="Conecctions/script.js" defer></script>
+  </head>
+  <body>
+    <div class="pgina-principal">
+      <!-- 2. Añadimos el reproductor de audio invisible -->
+      <audio id="audio-player" src="https://sonic-us.arkeo.cl/8516/stream"></audio>
+
+      <div class="top-bar">
+        <div class="rectangle-11"></div>
+        <img class="ceat-logo" src="https://www.ceat.cl/inicio/wp-content/uploads/2024/03/LOGO-CEAT-2024-BLANCO.png" />
+        <div class="text-wrapper-16">Radio Escolar CEAT</div>
+        <div class="text-wrapper-15">Conectando la comunidad educativa</div>
+      </div>
+
+      <div class="seccin-reproductor">
+        <!-- Fila 1: Indicador "En vivo" -->
+        <div class="estado-de-radio">
+          <div class="ellipse"></div>
+          <div class="text-wrapper-14">En vivo</div>
+        </div>
+
+        <!-- Fila 2: Títulos -->
+        <div class="text-wrapper-13">Señal en vivo</div>
+        <div class="text-wrapper-12">Listo para reproducir</div>
+
+        <!-- Fila 3: Controles del reproductor -->
+        <div class="player-controls">
+          <!-- 3. Convertimos el enlace en un botón interactivo -->
+          <div id="play-button" class="botn-de-repoducir">
+            <div id="play-icon" class="text-wrapper-11">▶︎</div>
+            <div id="play-text" class="text-wrapper-10">Reproducir</div>
+          </div>
+          <div class="seccin-volumen">
+            <div class="text-wrapper-9">Volumen</div>
+            <input type="range" id="volume-slider" class="rectangle-9" min="0" max="100" value="100" />
+          </div>
+        </div>
+
+        <!-- Fila 4: Estado de reproducción (para JS) -->
+        <div class="estado-de">
+          <span class="text-wrapper-8">Estado:</span>
+          <span id="status-paused" class="pausado">⏸️ Pausado</span>
+          <span id="status-playing" class="text-wrapper-7">🟢 Reproduciendo</span>
+        </div>
+
+        <!-- Fila 5: Botón de Iniciar Sesión -->
+        <div class="botn-de-inicio-de">
+          <div class="text-wrapper-6">Iniciar Sesión</div>
+        </div>
+
+        <!-- Fila 6: Enlace de fallback -->
+        <p class="en-caso-de-no">
+          En caso de no escucharse, abra directamente
+          <a href="https://sonic-us.arkeo.cl/8516/stream" target="_blank" rel="noopener noreferrer" class="fallback-link">este enlace</a>.
+        </p>
+      </div>
+      <div class="seccin-programacin">
+        <div class="programaci-n-diaria">Programación diaria&nbsp;&nbsp;(<span id="current-date"></span>)</div>
+        <div class="pruebas-de">
+          <div class="hora-de-emisin">
+            <div class="rectangle-6"></div>
+            <div class="rectangle-7"></div>
+            <div class="text-wrapper-4">00:00 - 00:00</div>
+            <p class="text-wrapper-5">Texto ejemplo de programación diaria</p>
+          </div>
+          <div class="hora-de-emisin">
+            <div class="rectangle-6"></div>
+            <div class="rectangle-7"></div>
+            <div class="text-wrapper-4">00:00 - 00:00</div>
+            <p class="text-wrapper-5">Texto ejemplo de programación diaria</p>
+          </div>
+          <div class="hora-de-emisin">
+            <div class="rectangle-6"></div>
+            <div class="rectangle-7"></div>
+            <div class="text-wrapper-4">00:00 - 00:00</div>
+            <p class="text-wrapper-5">Texto ejemplo de programación diaria</p>
+          </div>
+          <div class="hora-de-emisin">
+            <div class="rectangle-6"></div>
+            <div class="rectangle-7"></div>
+            <div class="text-wrapper-4">00:00 - 00:00</div>
+            <p class="text-wrapper-5">Texto ejemplo de programación diaria</p>
+          </div>
+          <div class="hora-de-emisin">
+            <div class="rectangle-6"></div>
+            <div class="rectangle-7"></div>
+            <div class="text-wrapper-4">00:00 - 00:00</div>
+            <p class="text-wrapper-5">Texto ejemplo de programación diaria</p>
+          </div>
+        </div>
+        <button id="open-modal-programacion" class="botn-programacin">
+          <div class="rectangle-5"></div>
+          <p class="text-wrapper-3">Haz click para ver la programación semanal.</p>
+        </button>
+        <div id="modal-programacion" class="modal">
+          <div class="modal-content programacion-semanal-modal">
+            <div class="text-wrapper">Programación Semanal</div>
+            <div class="dias">
+              <div class="lunes">
+                <div class="div-2"></div>
+                <div class="text-wrapper-5">Lunes</div>
+              </div>
+              <div class="martes">
+                <div class="div-2"></div>
+                <div class="text-wrapper-3">Martes</div>
+              </div>
+              <div class="mircoles">
+                <div class="div-2"></div>
+                <div class="text-wrapper-4">Miércoles</div>
+              </div>
+              <div class="jueves">
+                <div class="div-2"></div>
+                <div class="text-wrapper-3">Jueves</div>
+              </div>
+              <div class="viernes">
+                <div class="div-2"></div>
+                <div class="mi-rcoles">Viernes</div>
+              </div>
+            </div>
+            <div class="test">
+              <div class="hora-de-emisin">
+                <div class="rectangle"></div>
+                <div class="div"></div>
+                <div class="text-wrapper-2">00:00 - 00:00</div>
+                <p class="p">Texto ejemplo de programación diaria</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="noticias">
+        <div class="rectangle-2"></div>
+        <div class="noticias-de-inters">
+          <div class="noticias-de-inter-s">Noticias de interés</div>
+          <div class="noticias-de-ejemplo">
+            <div class="ejemplo">
+              <div class="div-2"></div>
+              <div class="t-ejemplo">Ejemplo Titulo Noticia 4</div>
+            </div>
+            <div class="ejemplo-2">
+              <div class="div-2"></div>
+              <div class="t-ejemplo">Ejemplo Titulo Noticia 3</div>
+            </div>
+            <div class="ejemplo-3">
+              <div class="div-2"></div>
+              <div class="t-ejemplo">Ejemplo Titulo Noticia 2</div>
+            </div>
+            <div class="ejemplo-4">
+              <div class="div-2"></div>
+              <div class="t-ejemplo">Ejemplo Titulo Noticia 1</div>
+            </div>
+          </div>
+        </div>
+        <div class="zona-boletn">
+          <div class="rectangle-3"></div>
+          <div class="boletin">Boletín Semanal</div>
+          <p class="p">Espacio para boletín semanal del liceo</p>
+        </div>
+        <div class="text-wrapper-2">Noticias / Blogs</div>
+      </div>
+      <div class="bottom-bar">
+        <div class="rectangle"></div>
+        <div class="footer-content">
+          <p class="contactanos">
+            CONTÁCTANOS<br /><br />Tel (+56 41 ) 2374904<br />Los Acacios 1755, San Pedro de la Paz
+          </p>
+          <div class="RRSS">
+            <p class="div">Síguenos en nuestras redes sociales</p>
+            <div class="social-icons">
+              <a href="https://www.facebook.com/CorporacionCEAT/" target="_blank" rel="noopener noreferrer">
+                <img class="facebook" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971612-facebook-company-social-media-logo-brand_82761.png" />
+              </a>
+              <a href="https://www.instagram.com/ceat_liceomh/" target="_blank" rel="noopener noreferrer">
+                <img class="instagram" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971619-instagram-company-social-media-logo-brand_82755.png" />
+              </a>
+              <a href="https://x.com/CorporacionCEAT" target="_blank" rel="noopener noreferrer">
+                <img class="twitter" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971616-twitter-company-social-media-logo-brand_82763.png" />
+              </a>
+              <a href="https://www.youtube.com/@CorporacionCEAT/videos" target="_blank" rel="noopener noreferrer">
+                <img class="youtube" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971632-youtube-company-social-media-logo-brand_82766.png" />
+              </a>
+              <a href="https://www.flickr.com/photos/corporacionceat/albums/" target="_blank" rel="noopener noreferrer">
+                <img class="flickr" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971630-flickr-company-social-media-logo-brand_82754.png" />
+              </a>
+              <a href="https://creators.spotify.com/pod/profile/ceat-podcast/" target="_blank" rel="noopener noreferrer">
+                <img class="image" src="https://www.ceat.cl/inicio/wp-content/uploads/2021/05/2-RSS-company-social-media-logo-1490971638-rss-company-social-media-logo-brand_82771.png" />
+              </a>
+            </div>
+          </div>
+          <div class="line"></div>
+          <p class="text-wrapper">© 2025 Radio Escolar CEAT — Todos los derechos reservados — Telecomunicaciones 2025</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
