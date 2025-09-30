@@ -15,7 +15,7 @@
 
       <div class="top-bar">
         <div class="rectangle-11"></div>
-        <img class="ceat-logo" src="https://www.ceat.cl/inicio/wp-content/uploads/2024/03/LOGO-CEAT-2024-BLANCO.png" />
+        <img class="ceat-logo" src="./Conecctions/assets/LogoCeat.png" />
         <div class="text-wrapper-16">Radio Escolar CEAT</div>
         <div class="text-wrapper-15">Conectando la comunidad educativa</div>
       </div>
@@ -26,34 +26,33 @@
           <div class="ellipse"></div>
           <div class="text-wrapper-14">En vivo</div>
         </div>
-
-        <!-- Fila 2: Títulos -->
-        <div class="text-wrapper-13">Señal en vivo</div>
-        <div class="text-wrapper-12">Listo para reproducir</div>
-
-        <!-- Fila 3: Controles del reproductor -->
-        <div class="player-controls">
-          <!-- 3. Convertimos el enlace en un botón interactivo -->
-          <div id="play-button" class="botn-de-repoducir">
-            <div id="play-icon" class="text-wrapper-11">▶︎</div>
-            <div id="play-text" class="text-wrapper-10">Reproducir</div>
+        
+        <!-- Nuevo contenedor para alinear reproductores -->
+        <div class="reproductor-grid">
+          <!-- Columna Izquierda: Reproductor de Radio -->
+          <div class="columna-radio">
+            <div class="text-wrapper-13">Señal en vivo</div>
+            <div class="text-wrapper-12">Listo para reproducir</div>
+            <div class="player-controls">
+              <div id="play-button" class="botn-de-repoducir">
+                <div id="play-icon" class="text-wrapper-11">▶︎</div>
+                <div id="play-text" class="text-wrapper-10">Reproducir</div>
+              </div>
+              <div class="seccin-volumen">
+                <div class="text-wrapper-9">Volumen</div>
+                <input type="range" id="volume-slider" class="rectangle-9" min="0" max="100" value="100" />
+              </div>
+            </div>
+            <div class="estado-de">
+              <span class="text-wrapper-8">Estado:</span>
+              <span id="status-paused" class="pausado">⏸️ Pausado</span>
+              <span id="status-playing" class="text-wrapper-7">🟢 Reproduciendo</span>
+            </div>
           </div>
-          <div class="seccin-volumen">
-            <div class="text-wrapper-9">Volumen</div>
-            <input type="range" id="volume-slider" class="rectangle-9" min="0" max="100" value="100" />
+          <!-- Columna Derecha: Reproductor de Spotify -->
+          <div class="columna-spotify">
+            <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4romF2saYpl1OJLR4TeGND?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
           </div>
-        </div>
-
-        <!-- Fila 4: Estado de reproducción (para JS) -->
-        <div class="estado-de">
-          <span class="text-wrapper-8">Estado:</span>
-          <span id="status-paused" class="pausado">⏸️ Pausado</span>
-          <span id="status-playing" class="text-wrapper-7">🟢 Reproduciendo</span>
-        </div>
-
-        <!-- Fila 5: Botón de Iniciar Sesión -->
-        <div class="botn-de-inicio-de">
-          <div class="text-wrapper-6">Iniciar Sesión</div>
         </div>
 
         <!-- Fila 6: Enlace de fallback -->
@@ -194,6 +193,10 @@
                 <img class="image" src="https://www.ceat.cl/inicio/wp-content/uploads/2021/05/2-RSS-company-social-media-logo-1490971638-rss-company-social-media-logo-brand_82771.png" />
               </a>
             </div>
+          </div>
+          <!-- Botón de Iniciar Sesión movido aquí -->
+          <div class="botn-de-inicio-de">
+            <div class="text-wrapper-6">Iniciar Sesión</div>
           </div>
           <div class="line"></div>
           <p class="text-wrapper">© 2025 Radio Escolar CEAT — Todos los derechos reservados — Telecomunicaciones 2025</p>
