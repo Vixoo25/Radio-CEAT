@@ -164,6 +164,48 @@
         </div>
       </div>
 
+      <!-- Ventana Modal para Añadir/Editar Cronograma por Día -->
+      <div id="modal-add-cronograma" class="modal">
+        <div class="modal-content add-cronograma-modal">
+          <!-- 3. Botón de cierre -->
+          <span class="close-button">&times;</span>
+          <!-- 1. Título -->
+          <h2>Añadir Cronograma</h2>
+          <!-- 2. Subtítulo con la fecha -->
+          <p id="cronograma-fecha-subtitulo" class="fecha-subtitulo"></p>
+
+          <!-- 4. Input para el nombre -->
+          <div class="form-group">
+            <label for="cronograma-nombre">Nombre del Cronograma:</label>
+            <input type="text" id="cronograma-nombre" name="cronograma-nombre">
+          </div>
+
+          <!-- 5. Inputs para la hora -->
+          <div class="time-inputs-container">
+            <div class="form-group">
+              <label for="cronograma-inicio">Hora de Inicio:</label>
+              <input type="time" id="cronograma-inicio" name="cronograma-inicio" required>
+            </div>
+            <div class="form-group">
+              <label for="cronograma-fin">Hora de Termino:</label>
+              <input type="time" id="cronograma-fin" name="cronograma-fin" required>
+            </div>
+          </div>
+
+          <!-- 6. Sección de Cronogramas Existentes -->
+          <div class="cronogramas-existentes-container">
+            <label>Cronogramas Existentes:</label>
+            <!-- Este contenedor se llenará con JavaScript -->
+            <div id="lista-cronogramas-existentes" class="lista-cronogramas"></div>
+          </div>
+
+          <!-- Botón de Guardar -->
+          <div class="add-cronograma-actions">
+            <button id="save-cronograma-button" class="editor-button save">Guardar</button>
+          </div>
+        </div>
+      </div>
+
       <div class="bottom-bar">
         <div class="rectangle"></div>
         <div class="footer-content">
@@ -201,10 +243,6 @@
                 <img class="image" src="https://www.ceat.cl/inicio/wp-content/uploads/2021/05/2-RSS-company-social-media-logo-1490971638-rss-company-social-media-logo-brand_82771.png" />
               </a>
               </div>
-            </div>
-            <!-- Botón de Iniciar Sesión movido aquí -->
-            <div class="botn-de-inicio-de">
-              <div class="text-wrapper-6">Iniciar Sesión</div>
             </div>
           </div>
 

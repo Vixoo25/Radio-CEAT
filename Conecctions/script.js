@@ -58,36 +58,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Lógica de Programación Centralizada (Calendario) ---
 
-  // Esta es nuestra nueva fuente de datos única.
-  // Las claves son fechas en formato "YYYY-MM-DD".
-  const calendarioProgramacion = {
-    "2024-10-28": [
-      { hora: "08:00 - 09:30", nombre: "Música para Despertar" },
-      { hora: "10:00 - 11:00", nombre: "Noticias CEAT" },
-      { hora: "14:00 - 15:00", nombre: "Tardes de Rock" },
-    ],
-    "2024-10-29": [
-      { hora: "09:00 - 10:00", nombre: "Clásicos de los 80" },
-      { hora: "11:30 - 12:30", nombre: "Entrevistas Escolares" },
-    ],
-    "2024-10-30": [
-      { hora: "08:30 - 09:30", nombre: "Podcast de Ciencias" },
-      { hora: "13:00 - 14:00", nombre: "Música Pop Actual" },
-      { hora: "16:00 - 17:00", nombre: "Debate Estudiantil" },
-    ],
-    "2024-10-31": [
-      { hora: "10:00 - 11:00", nombre: "Especial de Bandas Sonoras" },
-    ],
-    "2024-11-01": [], // Viernes sin programación
+  // Este objeto ahora funcionará como una caché temporal para las ediciones.
+  let calendarioProgramacion = {};
+
+  // Función para obtener la programación desde la base de datos
+  const fetchProgramacion = async (fecha) => {
+    try {
+      const response = await fetch(`obtener_cronogramas.php?fecha=${fecha}`);
+      if (!response.ok) throw new Error('Error en la respuesta del servidor.');
+      return await response.json();
+    } catch (error) {
+      console.error("Error al obtener la programación:", error);
+      return []; // Devuelve un array vacío en caso de error
+    }
   };
 
   // Función genérica para renderizar la programación en un contenedor
-  const renderizarProgramacion = (fecha, contenedor) => {
+  const renderizarProgramacion = async (fecha, contenedor) => {
     contenedor.innerHTML = ""; // Limpiamos el contenido anterior
-    const programas = calendarioProgramacion[fecha];
+    const programas = calendarioProgramacion[fecha] || await fetchProgramacion(fecha);
 
     // Verificamos si hay programas para esa fecha
     if (programas && programas.length > 0) {
+      // Ordenamos por hora de inicio
+      programas.sort((a, b) => a.hora.localeCompare(b.hora));
       programas.forEach(programa => {
         const itemHTML = `
           <div class="hora-de-emisin">
@@ -205,6 +199,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const calendarContainer = document.getElementById("calendar-container");
   const editorCancelButton = document.getElementById("editor-cancel-button");
   const editorSaveButton = document.getElementById("editor-save-button");
+  const modalAddCronograma = document.getElementById("modal-add-cronograma");
+  const addCronogramaContent = modalAddCronograma.querySelector(".modal-content");
+  const closeAddCronogramaButton = modalAddCronograma.querySelector(".close-button");
+  const cronogramaFechaSubtitulo = document.getElementById("cronograma-fecha-subtitulo");
+  const listaCronogramasExistentes = document.getElementById("lista-cronogramas-existentes");
+  const saveCronogramaButton = document.getElementById("save-cronograma-button");
+  const cronogramaNombreInput = document.getElementById("cronograma-nombre");
+  const cronogramaInicioInput = document.getElementById("cronograma-inicio");
+  const cronogramaFinInput = document.getElementById("cronograma-fin");
+
+  let currentEditingId = null; // Variable para guardar el ID del cronograma que se está editando
+  let currentEditingDate = null; // Variable para guardar la fecha que se está editando
 
   // Función para abrir el modal de login
   openLoginModal.addEventListener("click", () => {
@@ -239,12 +245,12 @@ document.addEventListener("DOMContentLoaded", () => {
       loginMessage.textContent = "Inicio de Sesión Exitoso";
       loginMessage.className = "success-message";
       
-      // Esperamos 3 segundos y cambiamos al modal de edición
+      // Esperamos 1 segundo y cambiamos al modal de edición
       setTimeout(() => {
         closeLoginModal();
         // Pequeña espera para que el modal de login se cierre antes de abrir el otro
         setTimeout(openEditorModal, 200);
-      }, 3000);
+      }, 1000);
     } else {
       loginMessage.textContent = "Usuario y/o Contraseña incorrectos, intente nuevamente";
       loginMessage.className = "error-message";
@@ -268,8 +274,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 400);
   };
 
-  editorCancelButton.addEventListener("click", closeEditorModal);
-  editorSaveButton.addEventListener("click", closeEditorModal);
+  // Botón rojo: Descarta los cambios y cierra
+  editorCancelButton.addEventListener("click", () => {
+    if (confirm("¿Estás seguro de que quieres descartar todos los cambios no guardados?")) {
+      calendarioProgramacion = {}; // Limpia la caché de ediciones
+      closeEditorModal();
+    }
+  });
+
+  // Botón verde: Guarda los cambios en la BD y cierra
+  editorSaveButton.addEventListener("click", async () => {
+    try {
+      const response = await fetch('sincronizar_cronogramas.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ calendario: calendarioProgramacion })
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        alert(result.message);
+        calendarioProgramacion = {}; // Limpia la caché
+        closeEditorModal();
+        // Actualiza la vista principal por si cambió el día de hoy
+        renderizarProgramacion(getFechaFormatoYMD(new Date()), contenedorProgramacionDiaria);
+      } else {
+        alert(`Error al guardar: ${result.message}`);
+      }
+    } catch (error) {
+      alert("Error de conexión al intentar guardar los cambios.");
+    }
+  });
 
   const initializeEditor = () => {
     const today = new Date();
@@ -326,11 +361,195 @@ document.addEventListener("DOMContentLoaded", () => {
     // Añadir los días del mes
     for (let day = 1; day <= daysInMonth; day++) {
       const currentDate = new Date(year, month, day);
+      const fechaCompleta = getFechaFormatoYMD(currentDate);
       const isSunday = currentDate.getDay() === 0;
-      calendarHTML += `<div class="calendar-day ${isSunday ? 'sunday' : ''}">${day}</div>`;
+      calendarHTML += `<div class="calendar-day ${isSunday ? 'sunday' : ''}" data-fecha="${fechaCompleta}">${day}</div>`;
     }
 
     calendarHTML += '</div>';
     calendarContainer.innerHTML = calendarHTML;
+
+    // --- Nueva Lógica: Añadir eventos de clic a los días del calendario ---
+    document.querySelectorAll('.calendar-day:not(.not-current-month)').forEach(dayElement => {
+      dayElement.addEventListener('click', () => {
+        const fechaSeleccionada = dayElement.dataset.fecha;
+        openAddCronogramaModal(fechaSeleccionada);
+      });
+    });
+  };
+
+  // --- Lógica para el Modal de Añadir Cronograma ---
+
+  const openAddCronogramaModal = async (fecha) => {
+    // Guardamos la fecha actual que se está editando
+    currentEditingDate = fecha;
+    currentEditingId = null; // Reseteamos el ID de edición
+    saveCronogramaButton.textContent = "Guardar"; // Reseteamos el texto del botón
+
+    // Formateamos la fecha para mostrarla en el subtítulo
+    const [year, month, day] = fecha.split('-');
+    cronogramaFechaSubtitulo.textContent = `${day}/${month}/${year}`;
+    // Forzamos la carga desde la BD al abrir el modal
+    calendarioProgramacion[fecha] = await fetchProgramacion(fecha);
+
+    // --- Nueva Lógica: Renderizar cronogramas existentes ---
+    // Usamos la misma función 'renderizarProgramacion' pero en el nuevo contenedor
+    renderizarProgramacionEnModal(fecha, listaCronogramasExistentes);
+
+    modalAddCronograma.style.display = "flex";
+    addCronogramaContent.style.animation = "animatetop 0.4s";
+  };
+
+  const closeAddCronogramaModal = () => {
+    addCronogramaContent.style.animation = "animatebottom 0.4s";
+    setTimeout(() => {
+      modalAddCronograma.style.display = "none";
+      // Limpiamos los campos al cerrar
+      cronogramaNombreInput.value = "";
+      cronogramaInicioInput.value = "";
+      cronogramaFinInput.value = "";
+      currentEditingId = null; // Limpiamos el ID de edición
+    }, 400);
+  };
+
+  closeAddCronogramaButton.addEventListener("click", closeAddCronogramaModal);
+
+  // Función específica para renderizar en el modal de añadir, usando la caché
+  const renderizarProgramacionEnModal = (fecha, contenedor) => {
+    contenedor.innerHTML = ""; // Limpiamos
+    const programas = calendarioProgramacion[fecha] || []; // Usamos la caché local
+
+    if (programas.length > 0) {
+      programas.sort((a, b) => a.hora.localeCompare(b.hora));
+      programas.forEach(programa => {
+        // Creamos los botones de acción para cada programa
+        const itemHTML = `
+          <div class="hora-de-emisin" data-id="${programa.id}">
+            <div class="programa-info">
+              <div class="text-wrapper-4">${programa.hora}</div>
+              <p class="text-wrapper-5">${programa.nombre}</p>
+            </div>
+            <div class="programa-actions">
+              <button class="action-btn edit" data-id="${programa.id}">✏️</button>
+              <button class="action-btn delete" data-id="${programa.id}">🗑️</button>
+            </div>
+          </div>
+        `;
+        contenedor.innerHTML += itemHTML;
+      });
+    } else {
+      contenedor.innerHTML = '<p class="no-programacion">No hay programación para este día.</p>';
+    }
+
+    // Añadimos los event listeners a los nuevos botones después de renderizar
+    addEventListenersToActions();
+  };
+
+  // Evento para el botón de guardar en el modal de añadir cronograma
+  saveCronogramaButton.addEventListener("click", async () => {
+    const nombre = cronogramaNombreInput.value.trim();
+    const inicio = cronogramaInicioInput.value;
+    const fin = cronogramaFinInput.value;
+
+    // Validamos que los campos no estén vacíos
+    if (!nombre || !inicio || !fin || !currentEditingDate) {
+      alert("Por favor, complete todos los campos.");
+      return;
+    }
+
+    // Si estamos editando (currentEditingId tiene un valor)
+    if (currentEditingId) {
+      // Lógica para ACTUALIZAR
+      try {
+        const response = await fetch('gestionar_cronograma.php', {
+          method: 'POST', // Usamos POST para actualizar
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: currentEditingId, nombre, inicio, fin })
+        });
+        const result = await response.json();
+        if (!result.success) throw new Error(result.message);
+
+        // Actualizamos la caché local
+        const programaIndex = calendarioProgramacion[currentEditingDate].findIndex(p => p.id === currentEditingId);
+        if (programaIndex > -1) {
+          calendarioProgramacion[currentEditingDate][programaIndex] = { id: currentEditingId, nombre, hora: `${inicio} - ${fin}` };
+        }
+
+      } catch (error) {
+        alert(`Error al actualizar: ${error.message}`);
+      }
+    } else {
+      // Lógica para CREAR (la que ya teníamos, pero ahora en la caché)
+      const nuevoCronograma = {
+        // Asignamos un ID temporal negativo para diferenciarlo de los de la BD
+        id: `temp-${Date.now()}`, 
+        hora: `${inicio} - ${fin}`,
+        nombre: nombre
+      };
+      if (!calendarioProgramacion[currentEditingDate]) {
+        calendarioProgramacion[currentEditingDate] = [];
+      }
+      calendarioProgramacion[currentEditingDate].push(nuevoCronograma);
+    }
+
+    // Refrescamos la lista y limpiamos el formulario
+    renderizarProgramacionEnModal(currentEditingDate, listaCronogramasExistentes);
+    cronogramaNombreInput.value = "";
+    cronogramaInicioInput.value = "";
+    cronogramaFinInput.value = "";
+    currentEditingId = null; // Reseteamos el ID
+    saveCronogramaButton.textContent = "Guardar"; // Reseteamos el botón
+  });
+
+  // Función para añadir los listeners a los botones de editar/borrar
+  const addEventListenersToActions = () => {
+    // Botones de Editar
+    document.querySelectorAll('.action-btn.edit').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const id = e.currentTarget.dataset.id;
+        const programa = calendarioProgramacion[currentEditingDate].find(p => p.id == id);
+        if (programa) {
+          const [inicio, fin] = programa.hora.split(' - ');
+          cronogramaNombreInput.value = programa.nombre;
+          cronogramaInicioInput.value = inicio;
+          cronogramaFinInput.value = fin;
+          currentEditingId = id; // Guardamos el ID que estamos editando
+          saveCronogramaButton.textContent = "Actualizar"; // Cambiamos el texto del botón
+        }
+      });
+    });
+
+    // Botones de Borrar
+    document.querySelectorAll('.action-btn.delete').forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const id = e.currentTarget.dataset.id;
+        if (confirm("¿Estás seguro de que quieres eliminar este cronograma?")) {
+          // Si el ID es temporal, solo lo borramos de la caché
+          if (String(id).startsWith('temp-')) {
+            calendarioProgramacion[currentEditingDate] = calendarioProgramacion[currentEditingDate].filter(p => p.id != id);
+            renderizarProgramacionEnModal(currentEditingDate, listaCronogramasExistentes);
+            return;
+          }
+
+          // Si el ID es de la BD, hacemos la petición DELETE
+          try {
+            const response = await fetch('gestionar_cronograma.php', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: id })
+            });
+            const result = await response.json();
+            if (!result.success) throw new Error(result.message);
+
+            // Eliminamos de la caché local y volvemos a renderizar
+            calendarioProgramacion[currentEditingDate] = calendarioProgramacion[currentEditingDate].filter(p => p.id != id);
+            renderizarProgramacionEnModal(currentEditingDate, listaCronogramasExistentes);
+
+          } catch (error) {
+            alert(`Error al eliminar: ${error.message}`);
+          }
+        }
+      });
+    });
   };
 });
