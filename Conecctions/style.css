@@ -87,7 +87,7 @@
     width: 90%; /* Ocupa el 90% del ancho de la página */
     max-width: 1130px; /* Pero no más de 1130px en pantallas grandes */
     padding: 40px; /* Espacio interno */
-    padding-bottom: 60px; /* Más espacio abajo para el link de fallback */
+    /* Ya no necesitamos el padding extra, el contenido lo define */
     background-color: #23232a;
     border-radius: 25px;
     box-shadow: 0px 10px 24px #00000040;
@@ -95,13 +95,13 @@
     flex-direction: column;
   }
   
-  /* --- Nuevos estilos para la grilla de reproductores --- */
-  .pgina-principal .reproductor-grid {
+  /* Contenedor principal para las columnas de radio y spotify */
+  .pgina-principal .contenido-reproductor {
     display: flex;
     flex-wrap: wrap; /* Para que se apilen en pantallas pequeñas */
     gap: 40px; /* Espacio entre el reproductor de radio y el de Spotify */
     width: 100%;
-    margin-top: 20px;
+    align-items: flex-start; /* Alinea las columnas en la parte superior */
   }
 
   .pgina-principal .columna-radio {
@@ -109,7 +109,7 @@
     min-width: 300px; /* Ancho mínimo antes de que se apile */
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Espacio entre los elementos internos */
+    gap: 20px; /* Espacio entre los elementos internos (En vivo, título, etc) */
   }
 
   .pgina-principal .columna-spotify {
@@ -118,7 +118,7 @@
   }
 
   .pgina-principal .columna-spotify iframe {
-    min-height: 352px; /* Asegura que el reproductor de Spotify tenga altura suficiente */
+    min-height: 350px; /* Asegura que el reproductor de Spotify tenga altura suficiente */
   }
 
   .pgina-principal .rectangle-8 {
@@ -161,16 +161,16 @@
   }
 
   .pgina-principal .en-caso-de-no {
-    position: absolute;
-    bottom: 20px;
-    left: 40px;
+    /* Lo convertimos en un elemento de bloque normal */
+    position: static;
     font-family: "Inter-Black", Helvetica;
     font-weight: 900;
     color: #ffffff; /* Cambiado a blanco para que sea visible */
-    font-size: 16px;
-    text-align: center;
+    font-size: 12px;
     letter-spacing: 0;
     line-height: normal;
+    letter-spacing: 1.5px;
+    margin-top: 75px; /* Espacio sobre el texto */
   }
 
   .pgina-principal .span {
@@ -249,7 +249,7 @@
     border-radius: 50%;
   }
 
-  .pgina-principal .botn-de-repoducir {
+  .pgina-principal .botn-de-reproducir {
     /* Botón de Reproducir */
     position: relative; /* Para el icono */
     display: flex;
@@ -303,6 +303,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    /* Ya no necesita align-self porque está dentro de una columna */
   }
 
   .pgina-principal .ellipse {
@@ -335,7 +336,7 @@
     position: relative;
     width: 90%;
     max-width: 1130px;
-    padding: 30px;
+    padding: 40px;
     background-color: #23232a;
     border-radius: 25px;
     box-shadow: 0px 10px 24px #00000040;
@@ -354,13 +355,13 @@
 
   .pgina-principal .botn-programacin {
     /* Botón para ver programación semanal */
-    width: 100%;
-    max-width: 546px;
+    /* Hacemos el botón más pequeño y lo centramos */
+    max-width: 800px;
     height: 60px;
     margin-top: 20px; /* Espacio sobre el botón */
     background-color: #d9d9d9;
     border-radius: 15px;
-    align-self: flex-start; /* Alineamos este botón a la izquierda */
+    align-self: flex-start; /* Alineamos el botón a la izquierda */
     cursor: pointer;
   }
 
@@ -378,22 +379,26 @@
     font-weight: 900;
     font-style: italic;
     color: #000000;
-    font-size: 24px;
+    /* Hacemos la fuente responsive con un tamaño mínimo y máximo */
+    font-size: clamp(16px, 2.5vw, 22px);
     text-align: center;
     letter-spacing: 0;
     line-height: normal;
   }
 
   .pgina-principal .pruebas-de {
-    /* Eliminamos posición absoluta */
     width: 100%;
-    max-width: 1029px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     background-color: #979797; /* Fondo gris para la lista */
-    padding: 10px; /* Espacio interno */
+    padding: 20px; /* Aumentamos el espacio interno */
     border-radius: 10px;
+    align-self: stretch; /* Hacemos que se estire para ocupar el ancho disponible */
+
+    /* Nuevos estilos para el scroll */
+    max-height: 350px; /* Altura máxima antes de que aparezca el scroll */
+    overflow-y: auto; /* Habilita el scroll vertical si el contenido se desborda */
   }
 
   .pgina-principal .hora-de-emisin {
@@ -477,13 +482,16 @@
   background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
   z-index: 1000; /* Asegura que esté por encima de todo */
   overflow: auto; /* Añade scroll si el contenido es muy largo */
+  /* Nuevos estilos para centrar el contenido */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content {
   position: relative;
   background-color: #ffffff;
-  margin: 10% auto; /* Lo subimos un poco */
-  padding: 20px;
+  margin: 0; /* Eliminamos el margen que causaba el movimiento */
   border: 5px solid #791214;
   width: 80%;
   max-width: 1184px; /* Ancho máximo del diseño original */
@@ -491,6 +499,7 @@
   border-radius: 10px;
   animation-name: animatetop;
   animation-duration: 0.4s;
+  padding: 20px;
   min-height: 500px; /* Aumentamos la altura vertical */
 }
 
@@ -498,6 +507,12 @@
 @keyframes animatetop {
   from {top: -300px; opacity: 0}
   to {top: 0; opacity: 1}
+}
+
+/* Nueva animación para que desaparezca hacia arriba */
+@keyframes animatebottom {
+  from {top: 0; opacity: 1}
+  to {top: -300px; opacity: 0}
 }
 
 /* --- Estilos para el contenido de la Programación Semanal (dentro del Modal) --- */
@@ -508,126 +523,124 @@
   align-items: center;
   gap: 37px;
 }
-
-.programacion-semanal-modal .text-wrapper {
+/* 1. Estilos para el título */
+.programacion-semanal-modal .titulo-semanal {
   font-family: "Inter-Black", Helvetica;
   font-weight: 900;
   color: #000000;
   font-size: 36px;
   text-align: center;
   letter-spacing: 3.24px;
+  margin-bottom: 20px; /* Espacio debajo del título */
 }
 
-.programacion-semanal-modal .dias {
+/* 2. Estilos para la fila de días */
+.programacion-semanal-modal .dias-semana {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* Centramos la fila de botones */
+  justify-content: center;
   gap: 20px; /* Espacio uniforme entre cada botón */
 }
 
-.programacion-semanal-modal .lunes,
-.programacion-semanal-modal .martes,
-.programacion-semanal-modal .mircoles,
-.programacion-semanal-modal .jueves,
-.programacion-semanal-modal .viernes {
-  /* Ancho fijo para cada botón, como en el diseño original */
-  width: 180px;
-  height: 60px;
+.programacion-semanal-modal .dia {
+  flex: 1; /* Permite que los botones crezcan y ocupen el espacio */
+  min-width: 150px; /* Ancho mínimo para cada día */
+  min-height: 60px; /* Usamos min-height para que pueda crecer si es necesario */
   background-color: #ffc1c1;
   border-radius: 15px;
   display: flex;
+  flex-direction: column; /* Apilamos el día y la fecha verticalmente */
   align-items: center;
   justify-content: center;
+  padding: 8px 10px; /* Ajustamos el padding */
   font-family: "Inter-BoldItalic", Helvetica;
   font-weight: 700;
   font-style: italic;
   color: #000000;
   font-size: 24px;
-  letter-spacing: 2.16px;
   cursor: pointer;
+  text-align: center;
+  line-height: 1.2; /* Mejoramos el espaciado vertical */
 }
 
-/* Ocultamos los divs internos que solo daban el fondo */
-.programacion-semanal-modal .div-2 {
-  display: none;
+.programacion-semanal-modal .dia-fecha {
+  font-size: 14px; /* Tamaño más pequeño */
+  font-style: normal; /* Le quitamos la cursiva */
+  font-weight: 500; /* Un poco menos grueso que el día */
+  opacity: 0.7; /* Hacemos el texto más transparente */
 }
 
-.programacion-semanal-modal .test {
+/* Estilo para el día activo/seleccionado */
+.programacion-semanal-modal .dia.active {
+  background-color: #ed6464; /* Un color más oscuro para indicar selección */
+  color: #ffffff;
+  transform: scale(1.05); /* Un pequeño efecto de zoom */
+}
+
+/* 3. Estilos para el contenedor de la programación */
+.programacion-semanal-modal .contenido-dia-semanal {
   width: 100%;
-  /* El bloque plomo ocupa el mismo ancho que la fila de días */
-  max-width: 1050px;
-  min-height: 250px; /* Le damos más altura */
-  display: flex;
   background-color: #979797;
   border-radius: 10px;
   padding: 20px;
-  margin-top: 20px; /* Espacio debajo de los días */
   box-sizing: border-box; /* Asegura que el padding no aumente el ancho */
+  
+  /* Añadimos flex para organizar los items de programación */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre cada programa */
+
+  /* Altura mínima y scroll */
+  min-height: 130px; /* Altura para ~2 items (50px cada uno + 10px de gap + padding) */
+  max-height: 400px; /* Altura máxima antes de que aparezca el scroll */
+  overflow-y: auto; /* Habilita el scroll vertical si el contenido se desborda */
 }
 
-.programacion-semanal-modal .hora-de-emisin {
+/* Estilo para el mensaje de "sin programación" */
+.programacion-semanal-modal .no-programacion {
+  font-family: "Inter-BoldItalic", Helvetica;
+  font-size: 18px;
+  color: #e0e0e0;
+  text-align: center;
+  margin: auto; /* Centra el mensaje vertical y horizontalmente */
+}
+
+/* --- Estilos para cada item de programa en el modal --- */
+
+.programacion-semanal-modal .programa-item {
   width: 100%;
-  height: 50px;
-  position: relative;
+  min-height: 50px; /* Altura mínima */
   background-color: #d9d9d9;
   border-radius: 10px;
   display: flex;
   align-items: center;
-  padding: 0 10px;
+  padding: 5px 10px; /* Padding interno */
   gap: 15px;
+  box-sizing: border-box;
 }
 
-/* Ocultamos los rectángulos de fondo */
-.programacion-semanal-modal .hora-de-emisin .rectangle {
-  display: none;
-}
-
-.programacion-semanal-modal .hora-de-emisin .div {
-  /* Este era el fondo de la hora, ahora lo aplicamos al texto */
-  display: none;
-}
-
-.programacion-semanal-modal .hora-de-emisin .text-wrapper-2 {
+.programacion-semanal-modal .programa-hora {
   background-color: #ed6464;
   border-radius: 25px;
   padding: 5px 15px;
-  height: 30px;
   font-family: "Inter-BlackItalic", Helvetica;
   font-weight: 900;
   font-style: italic;
   color: #ffffffe6;
   font-size: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   white-space: nowrap;
 }
 
-.programacion-semanal-modal .hora-de-emisin .p {
+.programacion-semanal-modal .programa-nombre {
   font-family: "Inter-Black", Helvetica;
   font-weight: 900;
   color: #000000;
-  font-size: 24px;
-  text-align: left;
+  font-size: 20px; /* Un poco más pequeño para el modal */
 }
 
 /* Eliminamos las posiciones absolutas del diseño original */
-.programacion-semanal-modal .text-wrapper,
-.programacion-semanal-modal .dias,
-.programacion-semanal-modal .test,
-.programacion-semanal-modal .hora-de-emisin,
-.programacion-semanal-modal .lunes,
-.programacion-semanal-modal .martes,
-.programacion-semanal-modal .mircoles,
-.programacion-semanal-modal .jueves,
-.programacion-semanal-modal .viernes,
-.programacion-semanal-modal .text-wrapper-2,
-.programacion-semanal-modal .p,
-.programacion-semanal-modal .text-wrapper-3,
-.programacion-semanal-modal .text-wrapper-4,
-.programacion-semanal-modal .text-wrapper-5,
-.programacion-semanal-modal .mi-rcoles {
+.programacion-semanal-modal * {
   position: static;
   margin: 0;
   width: auto;
@@ -642,6 +655,187 @@
 ========================================
 */
 
+/* --- Estilos para el Modal de Login --- */
+
+.login-modal {
+  max-width: 500px; /* Hacemos el modal más pequeño */
+  min-height: auto; /* La altura será automática */
+  margin: 0; /* Eliminamos el margen para que el centrado flex funcione */
+  padding: 40px;
+}
+
+.login-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.login-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-modal .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-modal label {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  color: #333;
+}
+
+.login-modal input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.login-modal .login-button {
+  padding: 15px;
+  background-color: #791214;
+  color: white;
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#login-message {
+  text-align: center;
+  font-family: "Inter-Bold", Helvetica;
+  min-height: 20px; /* Para que no salte el layout */
+}
+
+.success-message {
+  color: green;
+}
+
+.error-message {
+  color: red;
+}
+
+/* --- Estilos para el Modal del Editor --- */
+
+.editor-modal {
+  max-width: 900px; /* Un modal más ancho para el calendario */
+  min-height: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.editor-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 32px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.selectors-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.editor-modal select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.calendar-container {
+  width: 100%;
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.calendar-header, .calendar-day {
+  text-align: center;
+  padding: 10px 5px;
+  font-family: "Inter-Bold", Helvetica;
+}
+
+.calendar-header {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.calendar-day {
+  background-color: #ffffff;
+  border-radius: 5px;
+  min-height: 80px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+  background-color: #e9e9e9;
+}
+
+.calendar-day.not-current-month {
+  background-color: transparent;
+  color: #aaa;
+  cursor: default;
+}
+
+.calendar-day.sunday {
+  color: red;
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto; /* Empuja los botones al final */
+}
+
+.editor-button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.editor-button.cancel {
+  background-color: #c0392b; /* Rojo */
+}
+
+.editor-button.save {
+  background-color: #27ae60; /* Verde */
+}
+
   .pgina-principal .noticias {
     /* 4. Hacemos la sección de noticias responsive */
     position: relative;
@@ -652,191 +846,115 @@
     border-radius: 25px;
     box-shadow: 0px 10px 24px #00000040;
     display: flex;
-    flex-wrap: wrap; /* Permite que las columnas se ajusten */
-    justify-content: space-around; /* Distribuye el espacio */
+    flex-direction: column; /* Título arriba, contenido abajo */
+    align-items: center;
+    gap: 20px;
   }
   
   .pgina-principal .rectangle-2 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1130px;
     display: none; /* El fondo ahora está en .noticias */
+  }
+
+  .pgina-principal .noticias-content {
+    display: flex;
+    flex-wrap: wrap; /* Para que se apilen en móviles */
+    gap: 30px;
+    width: 100%;
+    justify-content: center;
   }
   
   .pgina-principal .noticias-de-inters {
-    position: absolute;
-    top: 89px;
-    left: 640px;
-    width: 432px;
-    height: 658px;
     /* Eliminamos posición absoluta */
     position: static;
     display: flex;
     flex-direction: column;
-    gap: 10.1px;
+    gap: 20px;
+    flex: 1; /* Ocupa la mitad del espacio, igual que el boletín */
+    min-width: 300px;
   }
   
   .pgina-principal .noticias-de-inter-s {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 83px;
-    width: 264px;
-    height: 35.46px;
     font-family: "Inter-BlackItalic", Helvetica;
     font-weight: 900;
     font-style: italic;
     color: #ffffff;
     font-size: 28px;
     text-align: center;
-    letter-spacing: 0;
-    line-height: 33.9px;
-    white-space: nowrap;
   }
   
-  .pgina-principal .noticias-de-ejemplo {
-    margin-left: 0;
-    width: 430px;
-    height: 611.95px;
-    position: relative;
+  .pgina-principal .noticias-grid {
+    display: grid;
+    /* Crea 2 columnas de tamaño igual, pero se ajustarán si no hay espacio */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
   }
   
-  .pgina-principal .ejemplo {
-    top: 324px;
-    left: 225px;
-    position: absolute;
-    width: 207px;
-    height: 288px;
+  .pgina-principal .noticia-item {
     display: flex;
     flex-direction: column;
-    gap: 5.1px;
+    gap: 10px;
   }
   
-  .pgina-principal .div-2 {
-    width: 205px;
-    height: 263.42px;
+  .pgina-principal .noticia-imagen {
+    width: 100%;
+    aspect-ratio: 4 / 5; /* Proporción para la imagen */
     background-color: #d9d9d9;
     border-radius: 25px;
   }
   
   .pgina-principal .t-ejemplo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 0;
-    width: 205px;
-    height: 19.25px;
     font-family: "Inter-BlackItalic", Helvetica;
     font-weight: 900;
     font-style: italic;
     color: #ffffff;
     font-size: 16px;
     text-align: center;
-    letter-spacing: 0;
-    line-height: 19.4px;
-    white-space: nowrap;
-  }
-  
-  .pgina-principal .ejemplo-2 {
-    top: 324px;
-    left: 0;
-    position: absolute;
-    width: 207px;
-    height: 288px;
-    display: flex;
-    flex-direction: column;
-    gap: 5.1px;
-  }
-  
-  .pgina-principal .ejemplo-3 {
-    top: 0;
-    left: 225px;
-    position: absolute;
-    width: 207px;
-    height: 288px;
-    display: flex;
-    flex-direction: column;
-    gap: 5.1px;
-  }
-  
-  .pgina-principal .ejemplo-4 {
-    top: 0;
-    left: 0;
-    position: absolute;
-    width: 207px;
-    height: 288px;
-    display: flex;
-    flex-direction: column;
-    gap: 5.1px;
   }
   
   .pgina-principal .zona-boletn {
-    position: absolute;
-    top: 89px;
-    left: 60px;
-    width: 434px;
-    height: 633px;
     /* Eliminamos posición absoluta */
     position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1; /* Ocupa una fracción del espacio */
+    min-width: 300px;
   }
   
-  .pgina-principal .rectangle-3 {
-    position: absolute;
-    top: 46px;
-    left: 0;
-    width: 430px;
-    height: 588px;
+  .pgina-principal .boletin-cuerpo {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
     background-color: #d9d9d9;
     border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
   }
   
   .pgina-principal .boletin {
-    position: absolute;
-    top: 0;
-    left: 79px;
-    width: 264px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-family: "Inter-BlackItalic", Helvetica;
     font-weight: 900;
     font-style: italic;
     color: #ffffff;
     font-size: 28px;
     text-align: center;
-    letter-spacing: 0;
-    line-height: 33.9px;
-    white-space: nowrap;
   }
   
   .pgina-principal .p {
-    position: absolute;
-    top: 278px;
-    left: 79px;
-    width: 264px;
-    height: 122px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: static;
     font-family: "Inter-BlackItalic", Helvetica;
     font-weight: 900;
     font-style: italic;
-    color: #ffffff;
+    color: #555555; /* Cambiamos el color para que contraste con el fondo claro */
     font-size: 28px;
     text-align: center;
-    letter-spacing: 0;
-    line-height: 33.9px;
   }
   
   .pgina-principal .text-wrapper-2 {
     /* Título principal de la sección de noticias */
     width: 100%; /* Ocupa todo el ancho */
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-family: "Inter-BlackItalic", Helvetica;
     font-weight: 900;
     font-style: italic;
@@ -859,7 +977,7 @@
     width: 100%;
     background-color: #791214;
     border-top: 1px solid #696969;
-    padding: 20px 0; /* Espacio vertical */
+    padding: 40px 0; /* Aumentamos el espacio vertical */
     margin-top: 50px; /* Espacio sobre el footer */
     display: flex;
     justify-content: center;
@@ -870,10 +988,28 @@
     width: 90%;
     max-width: 1130px; /* Ancho máximo igual a las otras secciones */
     display: flex;
-    flex-wrap: wrap; /* Permite que los elementos se reordenen en pantallas pequeñas */
+    flex-direction: column; /* Apilamos las filas verticalmente */
+    align-items: center;
+    gap: 25px; /* Espacio entre las filas y las líneas */
+  }
+
+  .pgina-principal .footer-row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
     justify-content: space-between; /* Espacio entre contacto y redes sociales */
     align-items: center;
     gap: 20px;
+  }
+
+  .pgina-principal .sugerencias-correo {
+    font-family: "Impact-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 16px;
+    letter-spacing: 2.40px;
+    line-height: 1.5;
+    text-align: right;
   }
 
   .pgina-principal .contactanos {
@@ -928,7 +1064,6 @@
     width: 100%; /* Ocupa todo el ancho del contenedor .footer-content */
     height: 2px;
     background-color: #ffffff80; /* Color blanco con 50% de opacidad */
-    order: 3; /* La posiciona después de contacto y redes sociales */
   }
 
   .pgina-principal .text-wrapper {
@@ -941,7 +1076,6 @@
     text-align: center;
     letter-spacing: 1.80px;
     line-height: normal;
-    order: 4; /* La posiciona al final de todo */
   }
 
   /* Eliminamos las reglas de posición absoluta para cada icono */
