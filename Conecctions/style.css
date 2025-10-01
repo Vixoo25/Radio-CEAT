@@ -933,7 +933,7 @@
 
   /* Scroll si es necesario */
   max-height: 200px; /* Altura máxima antes de que aparezca el scroll */
-  overflow-x: auto; /* Habilita el scroll vertical si el contenido se desborda */
+  overflow-y: auto; /* Habilita el scroll vertical si el contenido se desborda */
 }
 
 .add-cronograma-modal .programa-actions {
