@@ -17,20 +17,22 @@ if ($data && isset($data['calendario'])) {
     try {
         // 2. Preparamos las sentencias una sola vez
         $delete_stmt = $conn->prepare("DELETE FROM cronogramas WHERE fecha_evento = ?");
-        $insert_stmt = $conn->prepare("INSERT INTO cronogramas (fecha_evento, hora_inicio, hora_fin, titulo_programa) VALUES (?, ?, ?, ?)");
+        // MODIFICADO: Añadimos el campo 'descripcion' a la consulta de inserción
+        $insert_stmt = $conn->prepare("INSERT INTO cronogramas (fecha_evento, hora_inicio, hora_fin, titulo_programa, descripcion) VALUES (?, ?, ?, ?, ?)");
 
         foreach ($calendario as $fecha => $programas) {
             // 3. Borrar todos los cronogramas existentes para esta fecha
             $delete_stmt->bind_param("s", $fecha);
             $delete_stmt->execute();
 
-            // 4. Insertar los nuevos cronogramas
+            // 4. Insertar los nuevos cronogramas (ahora con descripción)
             foreach ($programas as $programa) {
                 // Extraer hora de inicio y fin
                 list($inicio, $fin) = explode(' - ', $programa['hora']);
                 $nombre = $programa['nombre'];
+                $descripcion = isset($programa['descripcion']) ? $programa['descripcion'] : ''; // Obtenemos la descripción
 
-                $insert_stmt->bind_param("ssss", $fecha, $inicio, $fin, $nombre);
+                $insert_stmt->bind_param("sssss", $fecha, $inicio, $fin, $nombre, $descripcion);
                 $insert_stmt->execute();
             }
         }

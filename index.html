@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="Conecctions/globals.css" />
     <link rel="stylesheet" href="Conecctions/style.css" />
-    <script src="Conecctions/config.js" defer></script>
     <script src="Conecctions/script.js" defer></script>
   </head>
   <body>
@@ -14,7 +13,9 @@
       <audio id="audio-player" src="https://sonic-us.arkeo.cl/8516/stream"></audio>
 
       <div class="top-bar">
-        <img class="ceat-logo" src="./Conecctions/assets/LogoCeat.png" />
+        <a href="https://ceat.cl" target="_blank" rel="noopener noreferrer">
+          <img class="ceat-logo" src="./Conecctions/assets/LogoCeat.png" />
+        </a>
         <div class="text-wrapper-16">Radio Escolar CEAT</div>
         <div class="text-wrapper-15">Conectando la comunidad educativa</div>
       </div>
@@ -59,7 +60,7 @@
         </div>
       </div>
       <div class="seccin-programacin">
-        <div class="programaci-n-diaria">Programación diaria&nbsp;&nbsp;(<span id="current-date"></span>)</div>
+        <div id="open-login-modal" class="programaci-n-diaria login-trigger">Programación diaria&nbsp;&nbsp;(<span id="current-date"></span>)</div>
         <div class="pruebas-de">
           <!-- La programación diaria se generará con JavaScript -->
         </div>
@@ -90,15 +91,17 @@
       </div>
       <div class="noticias">
         <!-- Título principal de la sección -->
-        <div id="open-login-modal" class="text-wrapper-2">Noticias / Blogs</div>
+        <div id="open-login-noticias-modal" class="text-wrapper-2 login-trigger">Noticias / Blogs</div>
 
         <!-- Contenedor para las dos columnas -->
         <div class="noticias-content">
           <!-- Columna Izquierda: Boletín -->
           <div class="zona-boletn">
-            <div class="boletin">Boletín Semanal</div>
-            <div class="boletin-cuerpo">
-              <p class="p">Espacio para boletín semanal del liceo</p>
+            <div class="boletin">Boletín Semanal</div> 
+            <div id="boletin-cuerpo" class="boletin-cuerpo">
+              <iframe id="boletin-pdf-viewer" src="" width="100%" height="100%" style="border: none;"></iframe>
+              <a id="boletin-overlay-link" href="#" target="_blank" rel="noopener noreferrer" class="boletin-overlay-link"></a>
+              <p id="boletin-texto" class="p" style="display: none;">No hay boletín disponible.</p>
             </div>
           </div>
 
@@ -106,11 +109,7 @@
           <div class="noticias-de-inters">
             <div class="noticias-de-inter-s">Noticias de interés</div>
             <div class="noticias-grid">
-              <!-- 4 noticias de ejemplo con la misma clase -->
-              <div class="noticia-item"><div class="noticia-imagen"></div><div class="t-ejemplo">Ejemplo Titulo Noticia 1</div></div>
-              <div class="noticia-item"><div class="noticia-imagen"></div><div class="t-ejemplo">Ejemplo Titulo Noticia 2</div></div>
-              <div class="noticia-item"><div class="noticia-imagen"></div><div class="t-ejemplo">Ejemplo Titulo Noticia 3</div></div>
-              <div class="noticia-item"><div class="noticia-imagen"></div><div class="t-ejemplo">Ejemplo Titulo Noticia 4</div></div>
+              <!-- Las noticias se generarán dinámicamente con JavaScript -->
             </div>
           </div>
         </div>
@@ -119,7 +118,7 @@
       <div id="modal-login" class="modal">
         <div class="modal-content login-modal">
           <span class="close-button">&times;</span>
-          <h2>Iniciar Sesión</h2>
+          <h2>Iniciar Sesión para editar cronograma</h2>
           <form id="login-form">
             <div class="input-group">
               <label for="username">Usuario</label>
@@ -132,6 +131,87 @@
             <p id="login-message"></p>
             <button type="submit" class="login-button">Ingresar</button>
           </form>
+        </div>
+      </div>
+
+      <!-- Ventana Modal para Iniciar Sesión de NOTICIAS -->
+      <div id="modal-login-noticias" class="modal">
+        <div class="modal-content login-modal">
+          <span class="close-button">&times;</span>
+          <h2>Iniciar Sesión para editar Noticias</h2>
+          <form id="login-form-noticias">
+            <div class="input-group">
+              <label for="username-noticias">Usuario</label>
+              <input type="text" id="username-noticias" name="username-noticias" required>
+            </div>
+            <div class="input-group">
+              <label for="password-noticias">Contraseña</label>
+              <input type="password" id="password-noticias" name="password-noticias" required>
+            </div>
+            <p id="login-message-noticias"></p>
+            <button type="submit" class="login-button">Ingresar</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Ventana Modal para el Editor de Boletín y Noticias -->
+      <div id="modal-editor-noticias" class="modal">
+        <div class="modal-content editor-noticias-modal">
+          <span class="close-button">&times;</span>
+          <h2>Editar Boletín y Noticias</h2>
+
+          <div class="editor-noticias-content">
+            <!-- Sección Izquierda: Boletín -->
+            <div class="editor-section boletin-editor">
+              <h3>Boletín Semanal (.pdf)</h3>
+              
+              <!-- Zona para subir archivo -->
+              <div id="drop-zone-boletin" class="drop-zone">
+                Arrastra un archivo .pdf aquí o <span class="file-select-link">selecciona uno</span>
+                <input type="file" id="file-input-boletin" accept=".pdf" style="display: none;">
+              </div>
+              <p id="file-info-boletin" class="file-info"></p>
+
+              <!-- Zona para mostrar y eliminar archivo existente -->
+              <div id="current-boletin-container" class="current-file-container" style="display: none;">
+                <label>Boletín Actual:</label>
+                <div id="current-boletin-info" class="current-file-info"></div>
+              </div>
+
+              <button id="save-boletin-button" class="editor-button save" disabled>Guardar Boletín</button>
+            </div>
+
+            <!-- Sección Derecha: Noticias -->
+            <div class="editor-section noticias-editor">
+              <h3>Noticias de Interés</h3>
+              
+              <!-- Formulario para añadir/editar noticia -->
+              <div id="form-noticia" class="form-group">
+                <input type="hidden" id="noticia-id">
+                <input type="text" id="noticia-titulo" placeholder="Título de la noticia" required>
+                <input type="date" id="noticia-fecha" required>
+                <input type="url" id="noticia-url" placeholder="URL de la noticia completa" required>
+                
+                <div id="drop-zone-noticia" class="drop-zone small">
+                  Arrastra una imagen (.png, .jpeg) o <span class="file-select-link">selecciona una</span>
+                  <input type="file" id="file-input-noticia" accept="image/png, image/jpeg" style="display: none;">
+                </div>
+                <p id="file-info-noticia" class="file-info"></p>
+                <img id="noticia-preview" src="" alt="Previsualización de imagen" style="display: none; max-width: 100%; border-radius: 8px; margin-top: 10px;">
+
+                <div class="add-cronograma-actions">
+                  <button id="cancel-edit-noticia-button" class="editor-button cancel" style="display: none;">Cancelar Edición</button>
+                  <button id="save-noticia-button" class="editor-button save">Guardar Noticia</button>
+                </div>
+              </div>
+
+              <!-- Lista de noticias existentes -->
+              <div class="cronogramas-existentes-container">
+                <label>Noticias Publicadas:</label>
+                <div id="lista-noticias-existentes" class="lista-cronogramas"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -192,6 +272,12 @@
             </div>
           </div>
 
+          <!-- Nuevo campo para la descripción -->
+          <div class="form-group">
+            <label for="cronograma-descripcion">Descripción (opcional):</label>
+            <textarea id="cronograma-descripcion" name="cronograma-descripcion" rows="4" maxlength="200" placeholder="Breve descripción del programa..."></textarea>
+          </div>
+
           <!-- 6. Sección de Cronogramas Existentes -->
           <div class="cronogramas-existentes-container">
             <label>Cronogramas Existentes:</label>
@@ -202,6 +288,22 @@
           <!-- Botón de Guardar -->
           <div class="add-cronograma-actions">
             <button id="save-cronograma-button" class="editor-button save">Guardar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ventana Modal para ver la Descripción del Cronograma -->
+      <div id="modal-descripcion-cronograma" class="modal">
+        <div class="modal-content descripcion-cronograma-modal">
+          <!-- Botón de cierre -->
+          <span class="close-button">&times;</span>
+          <!-- Título del cronograma -->
+          <h2 id="descripcion-titulo"></h2>
+          <!-- Hora del cronograma -->
+          <p id="descripcion-hora" class="hora-subtitulo"></p>
+          <!-- Contenedor de la descripción -->
+          <div class="descripcion-contenido">
+            <p id="descripcion-texto"></p>
           </div>
         </div>
       </div>
@@ -225,29 +327,31 @@
               <p class="div">Síguenos en nuestras redes sociales</p>
               <div class="social-icons">
               <a href="https://www.facebook.com/CorporacionCEAT/" target="_blank" rel="noopener noreferrer">
-                <img class="facebook" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971612-facebook-company-social-media-logo-brand_82761.png" />
+                <img class="facebook" src="./Conecctions/assets/LogoFB.png" />
               </a>
               <a href="https://www.instagram.com/ceat_liceomh/" target="_blank" rel="noopener noreferrer">
-                <img class="instagram" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971619-instagram-company-social-media-logo-brand_82755.png" />
+                <img class="instagram" src="./Conecctions/assets/LogoIG.png" />
               </a>
               <a href="https://x.com/CorporacionCEAT" target="_blank" rel="noopener noreferrer">
-                <img class="twitter" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971616-twitter-company-social-media-logo-brand_82763.png" />
+                <img class="twitter" src="./Conecctions/assets/LogoTWT.png" />
               </a>
               <a href="https://www.youtube.com/@CorporacionCEAT/videos" target="_blank" rel="noopener noreferrer">
-                <img class="youtube" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971632-youtube-company-social-media-logo-brand_82766.png" />
+                <img class="youtube" src="./Conecctions/assets/LogoYT.png" />
               </a>
               <a href="https://www.flickr.com/photos/corporacionceat/albums/" target="_blank" rel="noopener noreferrer">
-                <img class="flickr" src="https://www.ceat.cl/inicio/wp-content/uploads/2019/03/1490971630-flickr-company-social-media-logo-brand_82754.png" />
+                <img class="flickr" src="./Conecctions/assets/LogoFlickr.png" />
               </a>
               <a href="https://creators.spotify.com/pod/profile/ceat-podcast/" target="_blank" rel="noopener noreferrer">
-                <img class="image" src="https://www.ceat.cl/inicio/wp-content/uploads/2021/05/2-RSS-company-social-media-logo-1490971638-rss-company-social-media-logo-brand_82771.png" />
+                <img class="image" src="./Conecctions/assets/LogoRSS.png" />
               </a>
               </div>
             </div>
           </div>
 
           <div class="line"></div>
-          <p class="text-wrapper">© 2025 Radio Escolar CEAT — Todos los derechos reservados — Telecomunicaciones 2025</p>
+          <p class="text-wrapper">
+            © 2025 Radio Escolar CEAT — Todos los derechos reservados — <a href="https://www.ceattelecom.cl" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">Telecomunicaciones 2025</a>
+          </p>
         </div>
       </div>
     </div>

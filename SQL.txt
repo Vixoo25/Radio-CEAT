@@ -1,0 +1,65 @@
+--
+-- Base de datos: `radio_cronogramas`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cronogramas`
+-- Guarda la programación de la radio por día.
+--
+
+CREATE TABLE `cronogramas` (
+  `id_cronograma` int(11) NOT NULL AUTO_INCREMENT,
+  `fecha_evento` date NOT NULL,
+  `hora_inicio` time NOT NULL,
+  `hora_fin` time NOT NULL,
+  `titulo_programa` varchar(255) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  PRIMARY KEY (`id_cronograma`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `noticias`
+-- Guarda las noticias que se mostrarán en la página principal.
+--
+
+CREATE TABLE `noticias` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(255) NOT NULL,
+  `fecha` date NOT NULL,
+  `url` varchar(512) NOT NULL,
+  `imagen` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+-- Almacena los usuarios y sus contraseñas encriptadas.
+--
+
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `role` varchar(50) NOT NULL COMMENT 'Define el permiso: cronograma o noticias',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+-- IMPORTANTE: Después de importar, debes generar un nuevo hash para la contraseña
+-- que desees usar (ej: 'admin1234') con el script 'generar_hash.php' y
+-- actualizar estos registros.
+--
+
+INSERT INTO `usuarios` (`username`, `password_hash`, `role`) VALUES
+('admin', 'POR_ACTUALIZAR', 'cronograma'),
+('admin2', 'POR_ACTUALIZAR', 'noticias');
+
+-- --------------------------------------------------------

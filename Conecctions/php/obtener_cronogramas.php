@@ -13,7 +13,7 @@ if (isset($_GET['fecha'])) {
     $fecha = $_GET['fecha'];
 
     // Prepara la consulta para evitar inyecciones SQL
-    $stmt = $conn->prepare("SELECT id_cronograma, hora_inicio, hora_fin, titulo_programa FROM cronogramas WHERE fecha_evento = ? ORDER BY hora_inicio ASC");
+    $stmt = $conn->prepare("SELECT id_cronograma, hora_inicio, hora_fin, titulo_programa, descripcion FROM cronogramas WHERE fecha_evento = ? ORDER BY hora_inicio ASC");
     if ($stmt) {
         $stmt->bind_param("s", $fecha);
         $stmt->execute();
@@ -25,7 +25,8 @@ if (isset($_GET['fecha'])) {
             $programas[] = [
                 'id' => $row['id_cronograma'], // <-- AÑADIMOS EL ID
                 'hora' => date("H:i", strtotime($row['hora_inicio'])) . ' - ' . date("H:i", strtotime($row['hora_fin'])),
-                'nombre' => $row['titulo_programa']
+                'nombre' => $row['titulo_programa'],
+                'descripcion' => $row['descripcion'] // <-- AÑADIMOS LA DESCRIPCIÓN
             ];
         }
         $response = $programas;

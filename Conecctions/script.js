@@ -1,5 +1,36 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Seleccionamos los elementos que necesitamos controlar
+  // --- Variables Globales ---
+  // Variable para almacenar el archivo PDF seleccionado para el boletín
+  let boletinSeleccionado = null;
+  // Variable para almacenar el archivo de imagen de la noticia
+  let noticiaImagenSeleccionada = null;
+
+  // --- Funciones de Utilidad ---
+  const getFechaFormatoYMD = (date) => {
+    const anio = date.getFullYear();
+    const mes = String(date.getMonth() + 1).padStart(2, '0');
+    const dia = String(date.getDate()).padStart(2, '0');
+    return `${anio}-${mes}-${dia}`;
+  };
+
+  // --- Lógica para ajustar el padding superior dinámicamente ---
+  const topBar = document.querySelector(".top-bar");
+  const mainPage = document.querySelector(".pgina-principal");
+
+  const adjustTopPadding = () => {
+    // 1. Obtenemos la altura actual de la barra superior
+    const topBarHeight = topBar.offsetHeight;
+    // 2. Aplicamos esa altura + un margen de 30px al padding-top del contenido principal
+    // Usamos una variable CSS (--top-bar-height) para que sea fácil de actualizar.
+    mainPage.style.setProperty('--top-bar-height', `${topBarHeight + 30}px`);
+  };
+
+  // Ejecutamos la función al cargar la página
+  adjustTopPadding();
+  // Y también cada vez que se redimensione la ventana (importante para móviles al girar la pantalla)
+  window.addEventListener('resize', adjustTopPadding);
+
+  // --- Lógica del Reproductor de Audio ---
   const audioPlayer = document.getElementById("audio-player");
   const playButton = document.getElementById("play-button");
   const statusPlaying = document.getElementById("status-playing");
@@ -64,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Función para obtener la programación desde la base de datos
   const fetchProgramacion = async (fecha) => {
     try {
-      const response = await fetch(`obtener_cronogramas.php?fecha=${fecha}`);
+      const response = await fetch(`Conecctions/php/obtener_cronogramas.php?fecha=${fecha}`);
       if (!response.ok) throw new Error('Error en la respuesta del servidor.');
       return await response.json();
     } catch (error) {
@@ -83,10 +114,16 @@ document.addEventListener("DOMContentLoaded", () => {
       // Ordenamos por hora de inicio
       programas.sort((a, b) => a.hora.localeCompare(b.hora));
       programas.forEach(programa => {
+        // Añadimos el botón y el data-attribute con la descripción
         const itemHTML = `
-          <div class="hora-de-emisin">
-            <div class="text-wrapper-4">${programa.hora}</div>
-            <p class="text-wrapper-5">${programa.nombre}</p>
+          <div class="hora-de-emisin" data-nombre="${programa.nombre}" data-hora="${programa.hora}" data-descripcion="${programa.descripcion || ''}">
+            <div class="programa-info">
+              <div class="text-wrapper-4">${programa.hora}</div>
+              <p class="text-wrapper-5">${programa.nombre}</p>
+            </div>
+            <div class="programa-actions">
+              <button class="editor-button save ver-descripcion-btn">Ver descripción</button>
+            </div>
           </div>
         `;
         contenedor.innerHTML += itemHTML;
@@ -95,14 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Mostramos un mensaje si no hay programación
       contenedor.innerHTML = '<p class="no-programacion">No hay programación para este día.</p>';
     }
-  };
 
-  // Función para formatear una fecha a "YYYY-MM-DD"
-  const getFechaFormatoYMD = (date) => {
-    const anio = date.getFullYear();
-    const mes = String(date.getMonth() + 1).padStart(2, '0');
-    const dia = String(date.getDate()).padStart(2, '0');
-    return `${anio}-${mes}-${dia}`;
+    // Añadimos los listeners a los nuevos botones de "Ver descripción"
+    addEventListenersToVerDescripcion();
   };
 
   // Función para establecer las fechas en los botones de la semana
@@ -183,6 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderizarProgramacion(fechaHoyYMD, contenedorProgramacionDiaria);
 
   // --- Lógica para el Modal de Login ---
+  // (Este es para el CRONOGRAMA)
 
   const openLoginModal = document.getElementById("open-login-modal");
   const modalLogin = document.getElementById("modal-login");
@@ -194,6 +227,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordInput = document.getElementById("password");
   const modalEditor = document.getElementById("modal-editor");
   const editorContent = modalEditor.querySelector(".modal-content");
+  const modalEditorNoticias = document.getElementById("modal-editor-noticias");
+  const editorNoticiasContent = modalEditorNoticias.querySelector(".modal-content");
+  const closeEditorNoticiasButton = modalEditorNoticias.querySelector(".close-button");
+
   const yearSelector = document.getElementById("year-selector");
   const monthSelector = document.getElementById("month-selector");
   const calendarContainer = document.getElementById("calendar-container");
@@ -209,6 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cronogramaInicioInput = document.getElementById("cronograma-inicio");
   const cronogramaFinInput = document.getElementById("cronograma-fin");
 
+  const cronogramaDescripcionInput = document.getElementById("cronograma-descripcion");
   let currentEditingId = null; // Variable para guardar el ID del cronograma que se está editando
   let currentEditingDate = null; // Variable para guardar la fecha que se está editando
 
@@ -234,33 +272,397 @@ document.addEventListener("DOMContentLoaded", () => {
   closeLoginButton.addEventListener("click", closeLoginModal);
 
   // Evento para manejar el envío del formulario
-  loginForm.addEventListener("submit", (event) => {
+  loginForm.addEventListener("submit", async (event) => {
     event.preventDefault(); // Evita que la página se recargue
 
     const username = usernameInput.value;
     const password = passwordInput.value;
 
-    // Comparamos con las credenciales del archivo config.js
-    if (username === adminCredentials.username && password === adminCredentials.password) {
-      loginMessage.textContent = "Inicio de Sesión Exitoso";
-      loginMessage.className = "success-message";
-      
-      // Esperamos 1 segundo y cambiamos al modal de edición
-      setTimeout(() => {
-        closeLoginModal();
-        // Pequeña espera para que el modal de login se cierre antes de abrir el otro
-        setTimeout(openEditorModal, 200);
-      }, 1000);
-    } else {
-      loginMessage.textContent = "Usuario y/o Contraseña incorrectos, intente nuevamente";
+    try {
+      const response = await fetch('Conecctions/php/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const result = await response.json();
+
+      loginMessage.textContent = result.message;
+      if (result.success && result.role === 'cronograma') {
+        loginMessage.className = "success-message";
+        setTimeout(() => {
+          closeLoginModal();
+          setTimeout(openEditorModal, 200);
+        }, 1000);
+      } else {
+        loginMessage.className = "error-message";
+        if (!result.success) passwordInput.value = ""; // Limpiar solo la contraseña si falla
+      }
+    } catch (error) {
+      loginMessage.textContent = "Error de conexión con el servidor.";
       loginMessage.className = "error-message";
-      usernameInput.value = "";
-      passwordInput.value = "";
     }
   });
 
-  // --- Lógica para el Modal del Editor ---
+  // --- Lógica para el Modal de Login de NOTICIAS ---
 
+  const openLoginNoticiasModal = document.getElementById("open-login-noticias-modal");
+  const modalLoginNoticias = document.getElementById("modal-login-noticias");
+  const loginNoticiasContent = modalLoginNoticias.querySelector(".modal-content");
+  const closeLoginNoticiasButton = modalLoginNoticias.querySelector(".close-button");
+  const loginNoticiasForm = document.getElementById("login-form-noticias");
+  const loginNoticiasMessage = document.getElementById("login-message-noticias");
+
+  // Función para abrir el modal de login de noticias
+  openLoginNoticiasModal.addEventListener("click", () => {
+    modalLoginNoticias.style.display = "flex";
+    loginNoticiasContent.style.animation = "animatetop 0.4s";
+  });
+
+  // Función para cerrar el modal de login de noticias
+  const closeLoginNoticiasModal = () => {
+    loginNoticiasContent.style.animation = "animatebottom 0.4s";
+    setTimeout(() => {
+      modalLoginNoticias.style.display = "none";
+      loginNoticiasForm.reset();
+      loginNoticiasMessage.textContent = "";
+      loginNoticiasMessage.className = "";
+    }, 400);
+  };
+
+  closeLoginNoticiasButton.addEventListener("click", closeLoginNoticiasModal);
+
+  // Evento para manejar el envío del formulario de noticias
+  loginNoticiasForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const username = document.getElementById("username-noticias").value;
+    const password = document.getElementById("password-noticias").value;
+
+    try {
+      const response = await fetch('Conecctions/php/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const result = await response.json();
+
+      loginNoticiasMessage.textContent = result.message;
+      if (result.success && result.role === 'noticias') {
+        loginNoticiasMessage.className = "success-message";
+        setTimeout(() => {
+          closeLoginNoticiasModal();
+          setTimeout(openEditorNoticiasModal, 200);
+        }, 1000);
+      } else {
+        loginNoticiasMessage.className = "error-message";
+        if (!result.success) document.getElementById("password-noticias").value = "";
+      }
+    } catch (error) {
+      loginNoticiasMessage.textContent = "Error de conexión con el servidor.";
+      loginNoticiasMessage.className = "error-message";
+    }
+  });
+
+  // --- Lógica para el Modal del Editor de Boletín y Noticias ---
+
+  const openEditorNoticiasModal = () => {
+    modalEditorNoticias.style.display = "flex";
+    editorNoticiasContent.style.animation = "animatetop 0.4s";
+    // Al abrir, cargamos los datos del boletín y las noticias
+    checkCurrentBoletin();
+    renderizarNoticiasEnEditor();
+  };
+  
+  const closeEditorNoticiasModal = () => {
+    editorNoticiasContent.style.animation = "animatebottom 0.4s";
+    setTimeout(() => {
+      modalEditorNoticias.style.display = "none";
+      // Limpiamos la selección al cerrar
+      boletinSeleccionado = null;
+      document.getElementById("file-info-boletin").textContent = "";
+      document.getElementById("save-boletin-button").disabled = true;
+      resetFormularioNoticia();
+    }, 400);
+  };
+
+  closeEditorNoticiasButton.addEventListener("click", closeEditorNoticiasModal);
+
+  // Lógica para el área de "arrastrar y soltar" del boletín
+  const dropZoneBoletin = document.getElementById("drop-zone-boletin");
+  const fileInputBoletin = document.getElementById("file-input-boletin");
+  const fileInfoBoletin = document.getElementById("file-info-boletin");
+  const saveBoletinButton = document.getElementById("save-boletin-button");
+
+  // Prevenir comportamiento por defecto del navegador
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZoneBoletin.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, false);
+  });
+
+  // Resaltar el área al arrastrar un archivo sobre ella
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZoneBoletin.addEventListener(eventName, () => {
+      dropZoneBoletin.classList.add('dragover');
+    }, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZoneBoletin.addEventListener(eventName, () => {
+      dropZoneBoletin.classList.remove('dragover');
+    }, false);
+  });
+
+  // Manejar el archivo soltado
+  dropZoneBoletin.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files.length > 0 && files[0].type === "application/pdf") {
+      boletinSeleccionado = files[0];
+      fileInfoBoletin.textContent = `Archivo seleccionado: ${boletinSeleccionado.name}`;
+      saveBoletinButton.disabled = false;
+    } else {
+      alert("Por favor, selecciona un archivo PDF.");
+    }
+  }, false);
+
+  // Abrir selector de archivos al hacer clic
+  dropZoneBoletin.addEventListener('click', () => {
+    fileInputBoletin.click();
+  });
+
+  fileInputBoletin.addEventListener('change', () => {
+    if (fileInputBoletin.files.length > 0) {
+      boletinSeleccionado = fileInputBoletin.files[0];
+      fileInfoBoletin.textContent = `Archivo seleccionado: ${boletinSeleccionado.name}`;
+      saveBoletinButton.disabled = false;
+    }
+  });
+
+  // Lógica para guardar el boletín
+  saveBoletinButton.addEventListener("click", async () => {
+    if (!boletinSeleccionado) {
+      alert("No hay ningún archivo PDF seleccionado.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('boletin_pdf', boletinSeleccionado);
+
+    try {
+      const response = await fetch('Conecctions/php/gestionar_boletin.php?action=save', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.json();
+      alert(result.message);
+
+      if (result.success) {
+        // No cerramos el modal, solo actualizamos su estado
+        boletinSeleccionado = null;
+        document.getElementById("file-info-boletin").textContent = "";
+        saveBoletinButton.disabled = true;
+        checkCurrentBoletin(); // Actualiza la sección "Boletín Actual" en el modal
+        updateBoletinViewer(); // Actualiza la vista principal
+      }
+    } catch (error) {
+      alert("Error al subir el archivo. Revisa la consola para más detalles.");
+      console.error("Error en la subida:", error);
+    }
+  });
+
+  // Función para comprobar y mostrar el boletín actual
+  const checkCurrentBoletin = async () => {
+    const container = document.getElementById("current-boletin-container");
+    const infoDiv = document.getElementById("current-boletin-info");
+    try {
+      const response = await fetch('Conecctions/php/gestionar_boletin.php?action=get');
+      const result = await response.json();
+
+      if (result.success && result.filename) {
+        infoDiv.innerHTML = `
+          <span>${result.filename}</span>
+          <button class="action-btn delete" id="delete-boletin-btn">🗑️</button>
+        `;
+        container.style.display = "block";
+
+        // Añadir evento al nuevo botón de eliminar
+        document.getElementById("delete-boletin-btn").addEventListener("click", deleteCurrentBoletin);
+      } else {
+        container.style.display = "none";
+      }
+    } catch (error) {
+      console.error("Error al obtener el boletín actual:", error);
+      container.style.display = "none";
+    }
+  };
+
+  // Función para eliminar el boletín actual
+  const deleteCurrentBoletin = async () => {
+    if (!confirm("¿Estás seguro de que quieres eliminar el boletín actual?")) return;
+    const response = await fetch('Conecctions/php/gestionar_boletin.php?action=delete', { method: 'POST' });
+    const result = await response.json();
+    alert(result.message);
+    checkCurrentBoletin(); // Re-verificamos para actualizar la UI
+    updateBoletinViewer(); // Actualizamos la vista principal
+  };
+
+  // --- Lógica para el Editor de Noticias ---
+
+  const dropZoneNoticia = document.getElementById("drop-zone-noticia");
+  const fileInputNoticia = document.getElementById("file-input-noticia");
+  const fileInfoNoticia = document.getElementById("file-info-noticia");
+  const noticiaPreview = document.getElementById("noticia-preview");
+  const saveNoticiaButton = document.getElementById("save-noticia-button");
+  const cancelEditNoticiaButton = document.getElementById("cancel-edit-noticia-button");
+
+  // Lógica de Drag & Drop para la imagen de la noticia
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZoneNoticia.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+  });
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZoneNoticia.addEventListener(eventName, () => dropZoneNoticia.classList.add('dragover'), false);
+  });
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZoneNoticia.addEventListener(eventName, () => dropZoneNoticia.classList.remove('dragover'), false);
+  });
+
+  const handleNoticiaFile = (file) => {
+    if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
+      noticiaImagenSeleccionada = file;
+      fileInfoNoticia.textContent = `Imagen: ${file.name}`;
+      // Previsualización de la imagen
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        noticiaPreview.src = e.target.result;
+        noticiaPreview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert("Por favor, selecciona un archivo de imagen (.png o .jpeg).");
+    }
+  };
+
+  dropZoneNoticia.addEventListener('drop', (e) => handleNoticiaFile(e.dataTransfer.files[0]), false);
+  dropZoneNoticia.addEventListener('click', () => fileInputNoticia.click());
+  fileInputNoticia.addEventListener('change', () => handleNoticiaFile(fileInputNoticia.files[0]));
+
+  // Lógica para guardar/actualizar noticia
+  saveNoticiaButton.addEventListener("click", async () => {
+    const id = document.getElementById("noticia-id").value;
+    const titulo = document.getElementById("noticia-titulo").value;
+    const fecha = document.getElementById("noticia-fecha").value;
+    const url = document.getElementById("noticia-url").value;
+
+    if (!titulo || !fecha || !url) {
+      alert("Por favor, completa todos los campos: título, fecha y URL.");
+      return;
+    }
+    // Si es una noticia nueva, la imagen es obligatoria
+    if (!id && !noticiaImagenSeleccionada) {
+      alert("Por favor, selecciona una imagen para la nueva noticia.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('titulo', titulo);
+    formData.append('fecha', fecha);
+    formData.append('url', url);
+    if (id) formData.append('id', id);
+    if (noticiaImagenSeleccionada) formData.append('imagen', noticiaImagenSeleccionada);
+
+    try {
+      const response = await fetch('Conecctions/php/gestionar_noticias.php', { method: 'POST', body: formData });
+      const result = await response.json();
+      alert(result.message);
+
+      if (result.success) {
+        resetFormularioNoticia();
+        renderizarNoticiasEnEditor();
+        renderizarNoticiasEnPaginaPrincipal();
+      }
+    } catch (error) {
+      alert("Error al guardar la noticia. Revisa la consola.");
+      console.error("Error al guardar noticia:", error);
+    }
+  });
+
+  // Función para renderizar las noticias en el editor
+  const renderizarNoticiasEnEditor = async () => {
+    const lista = document.getElementById("lista-noticias-existentes");
+    lista.innerHTML = '<p class="no-programacion">Cargando noticias...</p>';
+    const response = await fetch('Conecctions/php/gestionar_noticias.php?action=get');
+    const noticias = await response.json();
+
+    lista.innerHTML = "";
+    if (noticias.length > 0) {
+      noticias.forEach(noticia => {
+        lista.innerHTML += `
+          <div class="hora-de-emisin" data-id="${noticia.id}">
+            <div class="programa-info">
+              <p class="text-wrapper-5">${noticia.titulo} (${noticia.fecha})</p>
+            </div>
+            <div class="programa-actions">
+              <button class="action-btn edit" onclick="editarNoticia(${noticia.id})">✏️</button>
+              <button class="action-btn delete" onclick="eliminarNoticia(${noticia.id})">🗑️</button>
+            </div>
+          </div>
+        `;
+      });
+    } else {
+      lista.innerHTML = '<p class="no-programacion">No hay noticias publicadas.</p>';
+    }
+  };
+
+  // Hacemos estas funciones globales para poder llamarlas desde el HTML
+  window.editarNoticia = async (id) => {
+    const response = await fetch(`Conecctions/php/gestionar_noticias.php?action=get&id=${id}`);
+    const noticia = await response.json();
+
+    document.getElementById("noticia-id").value = noticia.id;
+    document.getElementById("noticia-titulo").value = noticia.titulo;
+    document.getElementById("noticia-fecha").value = noticia.fecha;
+    document.getElementById("noticia-url").value = noticia.url;
+    
+    noticiaPreview.src = noticia.imagen_url + '?v=' + new Date().getTime(); // Forzar recarga de imagen
+    noticiaPreview.style.display = 'block';
+    fileInfoNoticia.textContent = "Dejar vacío para no cambiar la imagen actual.";
+
+    saveNoticiaButton.textContent = "Actualizar Noticia";
+    cancelEditNoticiaButton.style.display = 'inline-block';
+  };
+
+  window.eliminarNoticia = async (id) => {
+    if (!confirm("¿Estás seguro de que quieres eliminar esta noticia?")) return;
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('action', 'delete');
+    const response = await fetch('Conecctions/php/gestionar_noticias.php', { method: 'POST', body: formData });
+    const result = await response.json();
+    alert(result.message);
+    if (result.success) {
+      renderizarNoticiasEnEditor();
+      renderizarNoticiasEnPaginaPrincipal();
+    }
+  };
+
+  // Función para limpiar el formulario de noticias
+  const resetFormularioNoticia = () => {
+    document.getElementById("form-noticia").reset();
+    document.getElementById("noticia-id").value = "";
+    fileInfoNoticia.textContent = "";
+    noticiaPreview.style.display = 'none';
+    noticiaPreview.src = "";
+    noticiaImagenSeleccionada = null;
+    saveNoticiaButton.textContent = "Guardar Noticia";
+    cancelEditNoticiaButton.style.display = 'none';
+  };
+
+  cancelEditNoticiaButton.addEventListener("click", resetFormularioNoticia);
+
+  // --- Lógica para el Modal del Editor de Cronogramas ---
+  
   const openEditorModal = () => {
     modalEditor.style.display = "flex";
     editorContent.style.animation = "animatetop 0.4s";
@@ -285,7 +687,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Botón verde: Guarda los cambios en la BD y cierra
   editorSaveButton.addEventListener("click", async () => {
     try {
-      const response = await fetch('sincronizar_cronogramas.php', {
+      const response = await fetch('Conecctions/php/sincronizar_cronogramas.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ calendario: calendarioProgramacion })
@@ -408,6 +810,7 @@ document.addEventListener("DOMContentLoaded", () => {
       cronogramaNombreInput.value = "";
       cronogramaInicioInput.value = "";
       cronogramaFinInput.value = "";
+      cronogramaDescripcionInput.value = "";
       currentEditingId = null; // Limpiamos el ID de edición
     }, 400);
   };
@@ -423,11 +826,13 @@ document.addEventListener("DOMContentLoaded", () => {
       programas.sort((a, b) => a.hora.localeCompare(b.hora));
       programas.forEach(programa => {
         // Creamos los botones de acción para cada programa
+        // Guardamos la descripción en un data-attribute para fácil acceso
         const itemHTML = `
           <div class="hora-de-emisin" data-id="${programa.id}">
             <div class="programa-info">
               <div class="text-wrapper-4">${programa.hora}</div>
               <p class="text-wrapper-5">${programa.nombre}</p>
+              <!-- La descripción no se muestra aquí, pero se podría añadir un tooltip si se quisiera -->
             </div>
             <div class="programa-actions">
               <button class="action-btn edit" data-id="${programa.id}">✏️</button>
@@ -450,33 +855,37 @@ document.addEventListener("DOMContentLoaded", () => {
     const nombre = cronogramaNombreInput.value.trim();
     const inicio = cronogramaInicioInput.value;
     const fin = cronogramaFinInput.value;
+    const descripcion = cronogramaDescripcionInput.value.trim();
 
     // Validamos que los campos no estén vacíos
-    if (!nombre || !inicio || !fin || !currentEditingDate) {
+    if (!nombre || !inicio || !fin || !currentEditingDate) { // La descripción es opcional
       alert("Por favor, complete todos los campos.");
       return;
     }
 
     // Si estamos editando (currentEditingId tiene un valor)
     if (currentEditingId) {
-      // Lógica para ACTUALIZAR
+      // Lógica para ACTUALIZAR: Enviar el cambio al servidor inmediatamente.
+      // Esto asegura que la descripción se guarde en la BD en el momento.
       try {
-        const response = await fetch('gestionar_cronograma.php', {
-          method: 'POST', // Usamos POST para actualizar
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: currentEditingId, nombre, inicio, fin })
-        });
-        const result = await response.json();
-        if (!result.success) throw new Error(result.message);
-
-        // Actualizamos la caché local
-        const programaIndex = calendarioProgramacion[currentEditingDate].findIndex(p => p.id === currentEditingId);
-        if (programaIndex > -1) {
-          calendarioProgramacion[currentEditingDate][programaIndex] = { id: currentEditingId, nombre, hora: `${inicio} - ${fin}` };
+        // Solo intentamos la petición si el ID no es temporal
+        if (!String(currentEditingId).startsWith('temp-')) { // No hay cambio de ruta aquí, ya que el archivo no existe en el contexto.
+          const response = await fetch('Conecctions/php/gestionar_cronograma.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: currentEditingId, nombre, inicio, fin, descripcion })
+          });
+          const result = await response.json();
+          if (!result.success) throw new Error(result.message);
         }
 
+        // Actualizamos también la caché local para mantener la consistencia visual
+        const programaIndex = calendarioProgramacion[currentEditingDate].findIndex(p => p.id == currentEditingId);
+        if (programaIndex > -1) {
+          calendarioProgramacion[currentEditingDate][programaIndex] = { id: currentEditingId, nombre, hora: `${inicio} - ${fin}`, descripcion: descripcion };
+        }
       } catch (error) {
-        alert(`Error al actualizar: ${error.message}`);
+        alert(`Error al actualizar el cronograma: ${error.message}`);
       }
     } else {
       // Lógica para CREAR (la que ya teníamos, pero ahora en la caché)
@@ -484,7 +893,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Asignamos un ID temporal negativo para diferenciarlo de los de la BD
         id: `temp-${Date.now()}`, 
         hora: `${inicio} - ${fin}`,
-        nombre: nombre
+        nombre: nombre,
+        descripcion: descripcion
       };
       if (!calendarioProgramacion[currentEditingDate]) {
         calendarioProgramacion[currentEditingDate] = [];
@@ -497,6 +907,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cronogramaNombreInput.value = "";
     cronogramaInicioInput.value = "";
     cronogramaFinInput.value = "";
+    cronogramaDescripcionInput.value = "";
     currentEditingId = null; // Reseteamos el ID
     saveCronogramaButton.textContent = "Guardar"; // Reseteamos el botón
   });
@@ -513,6 +924,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cronogramaNombreInput.value = programa.nombre;
           cronogramaInicioInput.value = inicio;
           cronogramaFinInput.value = fin;
+          cronogramaDescripcionInput.value = programa.descripcion || ""; // Rellenamos la descripción
           currentEditingId = id; // Guardamos el ID que estamos editando
           saveCronogramaButton.textContent = "Actualizar"; // Cambiamos el texto del botón
         }
@@ -533,7 +945,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // Si el ID es de la BD, hacemos la petición DELETE
           try {
-            const response = await fetch('gestionar_cronograma.php', {
+            const response = await fetch('Conecctions/php/gestionar_cronograma.php', {
               method: 'DELETE',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ id: id })
@@ -552,4 +964,118 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   };
+
+  // --- Lógica para el Modal de Descripción de Cronograma ---
+
+  const modalDescripcion = document.getElementById("modal-descripcion-cronograma");
+  const descripcionContent = modalDescripcion.querySelector(".modal-content");
+  const closeDescripcionButton = modalDescripcion.querySelector(".close-button");
+  const descripcionTitulo = document.getElementById("descripcion-titulo");
+  const descripcionHora = document.getElementById("descripcion-hora");
+  const descripcionTexto = document.getElementById("descripcion-texto");
+
+  const openDescripcionModal = (nombre, hora, descripcion) => {
+    descripcionTitulo.textContent = nombre;
+    descripcionHora.textContent = `(${hora})`;
+    descripcionTexto.textContent = descripcion || "Cronograma sin descripción.";
+
+    modalDescripcion.style.display = "flex";
+    descripcionContent.style.animation = "animatetop 0.4s";
+  };
+
+  const closeDescripcionModal = () => {
+    descripcionContent.style.animation = "animatebottom 0.4s";
+    setTimeout(() => {
+      modalDescripcion.style.display = "none";
+    }, 400);
+  };
+
+  closeDescripcionButton.addEventListener("click", closeDescripcionModal);
+  modalDescripcion.addEventListener("click", (event) => {
+    if (event.target === modalDescripcion) {
+      closeDescripcionModal();
+    }
+  });
+
+  // Función para añadir listeners a los botones "Ver descripción"
+  const addEventListenersToVerDescripcion = () => {
+    document.querySelectorAll('.ver-descripcion-btn').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const cronogramaElement = e.currentTarget.closest('.hora-de-emisin');
+        const nombre = cronogramaElement.dataset.nombre;
+        const hora = cronogramaElement.dataset.hora;
+        const descripcion = cronogramaElement.dataset.descripcion;
+
+        openDescripcionModal(nombre, hora, descripcion);
+      });
+    });
+  };
+
+  // --- Lógica para las Noticias en la página principal ---
+  const renderizarNoticiasEnPaginaPrincipal = async () => {
+    const grid = document.querySelector(".noticias-grid");
+    grid.innerHTML = ""; // Limpiamos
+    const response = await fetch('Conecctions/php/gestionar_noticias.php?action=get');
+    const noticias = await response.json();
+
+    if (noticias.length > 0) {
+      noticias.forEach(noticia => {
+        const [year, month, day] = noticia.fecha.split('-');
+        const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+        const fechaFormateada = `${day} ${meses[parseInt(month) - 1]}, ${year}`;
+        grid.innerHTML += `
+          <div class="noticia-item">
+            <a href="${noticia.url}" target="_blank" rel="noopener noreferrer">
+              <div class="noticia-imagen" style="background-image: url('${noticia.imagen_url}?v=${new Date().getTime()}'); background-size: cover; background-position: center;"></div>
+              <div class="noticia-texto-container">
+                <div class="t-ejemplo">${noticia.titulo}</div>
+                <div class="t-ejemplo noticia-fecha">${fechaFormateada}</div>
+              </div>
+            </a>
+          </div>
+        `;
+      });
+    }
+  };
+
+  // --- Lógica para el Boletín en la página principal ---
+  const updateBoletinViewer = async () => {
+    const pdfViewer = document.getElementById("boletin-pdf-viewer");
+    const overlayLink = document.getElementById("boletin-overlay-link");
+    const boletinCuerpo = document.getElementById("boletin-cuerpo");
+    const boletinTexto = document.getElementById("boletin-texto");
+
+    try {
+      const response = await fetch('Conecctions/php/gestionar_boletin.php?action=get');
+      const result = await response.json();
+
+      if (result.success && result.filepath) {
+        const pdfPathForLink = result.filepath.replace('#toolbar=0', ''); // Sin toolbar para la nueva pestaña
+        const pdfPathForIframe = result.filepath; // Con #toolbar=0 para el iframe
+        
+        pdfViewer.src = pdfPathForIframe;
+        overlayLink.href = pdfPathForLink;
+        pdfViewer.style.display = 'block';
+        overlayLink.style.display = 'block'; // Aseguramos que el enlace esté visible
+        boletinTexto.style.display = 'none';
+        boletinCuerpo.classList.remove('no-boletin'); // Habilitamos la interacción
+      } else {
+        pdfViewer.style.display = 'none';
+        overlayLink.style.display = 'none'; // Ocultamos el enlace para que no sea clickeable
+        boletinTexto.style.display = 'block';
+        boletinCuerpo.classList.add('no-boletin'); // Deshabilitamos la interacción
+      }
+    } catch (error) {
+      console.error("Error al actualizar el visor de PDF:", error);
+      pdfViewer.style.display = 'none';
+      overlayLink.style.display = 'none';
+      boletinTexto.style.display = 'block';
+      boletinTexto.textContent = "Error al cargar el boletín.";
+      boletinCuerpo.classList.add('no-boletin');
+    }
+  };
+  // Cargar el boletín al iniciar la página
+  updateBoletinViewer();
+  // Cargar las noticias al iniciar la página
+  renderizarNoticiasEnPaginaPrincipal();
 });
