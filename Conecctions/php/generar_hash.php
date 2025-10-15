@@ -10,7 +10,7 @@
 // 3. Abrelo en tu navegador (ej: http://localhost/mi_radio/generar_hash.php).
 // 4. Copia el hash generado y pégalo en la base de datos.
 
-$passwordPlana = 'admin1234'; // <-- CAMBIA ESTO
+$passwordPlana = 'Nogganeg.123'; // <-- CAMBIA ESTO
 
 $hash = password_hash($passwordPlana, PASSWORD_DEFAULT);
 

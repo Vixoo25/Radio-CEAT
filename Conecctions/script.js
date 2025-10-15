@@ -251,9 +251,26 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentEditingDate = null; // Variable para guardar la fecha que se está editando
 
   // Función para abrir el modal de login
-  openLoginModal.addEventListener("click", () => {
-    modalLogin.style.display = "flex"; // Cambiado a flex para centrar
-    loginContent.style.animation = "animatetop 0.4s";
+  openLoginModal.addEventListener("click", async () => {
+    // 1. Comprobar si ya hay una sesión activa
+    try {
+      const response = await fetch('Conecctions/php/check_session.php');
+      const session = await response.json();
+
+      // 2. Si hay sesión y el rol es correcto, abrir el editor directamente
+      if (session.success && (session.role === 'cronograma' || session.role === 'admin_total')) {
+        openEditorModal();
+      } else {
+        // 3. Si no, mostrar el modal de login
+        modalLogin.style.display = "flex";
+        loginContent.style.animation = "animatetop 0.4s";
+      }
+    } catch (error) {
+      // En caso de error de red, mostrar el login como fallback
+      console.error("Error al verificar la sesión:", error);
+      modalLogin.style.display = "flex";
+      loginContent.style.animation = "animatetop 0.4s";
+    }
   });
 
   // Función para cerrar el modal de login con animación
@@ -313,9 +330,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginNoticiasMessage = document.getElementById("login-message-noticias");
 
   // Función para abrir el modal de login de noticias
-  openLoginNoticiasModal.addEventListener("click", () => {
-    modalLoginNoticias.style.display = "flex";
-    loginNoticiasContent.style.animation = "animatetop 0.4s";
+  openLoginNoticiasModal.addEventListener("click", async () => {
+    // 1. Comprobar si ya hay una sesión activa
+    try {
+      const response = await fetch('Conecctions/php/check_session.php');
+      const session = await response.json();
+
+      // 2. Si hay sesión y el rol es correcto, abrir el editor directamente
+      if (session.success && (session.role === 'noticias' || session.role === 'admin_total')) {
+        openEditorNoticiasModal();
+      } else {
+        // 3. Si no, mostrar el modal de login
+        modalLoginNoticias.style.display = "flex";
+        loginNoticiasContent.style.animation = "animatetop 0.4s";
+      }
+    } catch (error) {
+      console.error("Error al verificar la sesión:", error);
+      modalLoginNoticias.style.display = "flex";
+      loginNoticiasContent.style.animation = "animatetop 0.4s";
+    }
   });
 
   // Función para cerrar el modal de login de noticias
@@ -330,6 +363,22 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   closeLoginNoticiasButton.addEventListener("click", closeLoginNoticiasModal);
+
+  // --- Lógica para Cerrar Sesión ---
+  const handleLogout = async () => {
+    if (confirm("¿Estás seguro de que quieres cerrar la sesión?")) {
+      try {
+        await fetch('Conecctions/php/logout.php');
+        alert("Sesión cerrada. Serás redirigido a la página principal.");
+        window.location.reload(); // Recarga la página para limpiar todo estado
+      } catch (error) {
+        alert("Error al intentar cerrar la sesión.");
+      }
+    }
+  };
+
+  document.getElementById("logout-noticias-button").addEventListener("click", handleLogout);
+  document.getElementById("logout-cronograma-button").addEventListener("click", handleLogout);
 
   // Evento para manejar el envío del formulario de noticias
   loginNoticiasForm.addEventListener("submit", async (event) => {
@@ -1074,6 +1123,58 @@ document.addEventListener("DOMContentLoaded", () => {
       boletinCuerpo.classList.add('no-boletin');
     }
   };
+
+  // --- Lógica para el Formulario de Mensajes de Oyentes ---
+  const formMensajeOyente = document.getElementById("form-mensaje-oyente");
+  const mensajeTexto = document.getElementById("mensaje-texto");
+  const charCounter = document.getElementById("char-counter");
+  const mensajeStatus = document.getElementById("mensaje-oyente-status");
+  const maxChars = 300;
+
+  // Actualizar contador de caracteres
+  mensajeTexto.addEventListener("input", () => {
+    const currentLength = mensajeTexto.value.length;
+    charCounter.textContent = `${currentLength}/${maxChars}`;
+
+    // Cambiar a color rojo si quedan 10 o menos caracteres
+    if (maxChars - currentLength <= 10) {
+      charCounter.classList.add("warning");
+    } else {
+      charCounter.classList.remove("warning");
+    }
+  });
+
+  // Enviar formulario
+  formMensajeOyente.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    mensajeStatus.textContent = "Enviando...";
+    mensajeStatus.className = "";
+
+    const formData = new FormData(formMensajeOyente);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch('Conecctions/php/enviar_mensaje.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+
+      mensajeStatus.textContent = result.message;
+      mensajeStatus.className = result.success ? "success-message" : "error-message";
+
+      if (result.success) {
+        formMensajeOyente.reset();
+        charCounter.textContent = `0/${maxChars}`;
+        charCounter.classList.remove("warning");
+      }
+    } catch (error) {
+      mensajeStatus.textContent = "Error de conexión al enviar el mensaje.";
+      mensajeStatus.className = "error-message";
+    }
+  });
+
   // Cargar el boletín al iniciar la página
   updateBoletinViewer();
   // Cargar las noticias al iniciar la página

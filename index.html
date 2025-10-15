@@ -54,8 +54,13 @@
             </p>
           </div>
           <!-- Columna Derecha: Spotify -->
-          <div class="columna-spotify">
-            <iframe data-testid="embed-iframe" style="border-radius:20px" src="https://open.spotify.com/embed/playlist/4romF2saYpl1OJLR4TeGND?utm_source=generator" width="100%" height="360" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          <div class="columna-spotify">            
+            <!-- Nuevo botón circular que reemplaza a Spotify -->
+            <a href="https://open.spotify.com/show/0A9TSHjbKjdH4MVrMz5S3Y?si=5fcfaa6bd55848d6" target="_blank" rel="noopener noreferrer">
+              <div id="circular-action-button" class="circular-button">
+                <img src="./Conecctions/assets/CeatPodcast.png" alt="Ir al Podcast de CEAT">
+              </div>
+            </a>
           </div>
         </div>
       </div>
@@ -114,6 +119,37 @@
           </div>
         </div>
       </div>
+
+      <!-- Nueva Sección: Envío de Mensajes -->
+      <div class="seccin-mensajes">
+        <h2 class="text-wrapper-2">¡Envíanos un Mensaje!</h2>
+        <p class="subtitulo-seccion">Tus saludos, sugerencias o comentarios son bienvenidos.</p>
+        
+        <form id="form-mensaje-oyente" class="form-mensaje">
+          <div class="form-row">
+            <div class="input-group-mensaje">
+              <label for="mensaje-gmail">Tu Correo Electrónico</label>
+              <input type="email" id="mensaje-gmail" name="gmail" placeholder="ejemplo@correo.com" required>
+            </div>
+            <div class="input-group-mensaje">
+              <label for="mensaje-nombre">Tu Nombre</label>
+              <input type="text" id="mensaje-nombre" name="nombre" placeholder="Tu nombre o apodo" required>
+            </div>
+          </div>
+          
+          <div class="input-group-mensaje">
+            <div class="mensaje-header">
+              <label for="mensaje-texto">Mensaje</label>
+              <span id="char-counter" class="char-counter">0/300</span>
+            </div>
+            <textarea id="mensaje-texto" name="mensaje" rows="5" maxlength="300" placeholder="Escribe tu mensaje aquí..." required></textarea>
+          </div>
+          
+          <button type="submit" class="editor-button save">Enviar Mensaje</button>
+          <p id="mensaje-oyente-status"></p>
+        </form>
+      </div>
+
       <!-- Ventana Modal para Iniciar Sesión -->
       <div id="modal-login" class="modal">
         <div class="modal-content login-modal">
@@ -157,8 +193,10 @@
       <!-- Ventana Modal para el Editor de Boletín y Noticias -->
       <div id="modal-editor-noticias" class="modal">
         <div class="modal-content editor-noticias-modal">
-          <span class="close-button">&times;</span>
-          <h2>Editar Boletín y Noticias</h2>
+          <div class="modal-header">
+            <h2>Editar Boletín y Noticias</h2>            
+            <span class="close-button">&times;</span>
+          </div>
 
           <div class="editor-noticias-content">
             <!-- Sección Izquierda: Boletín -->
@@ -179,6 +217,8 @@
               </div>
 
               <button id="save-boletin-button" class="editor-button save" disabled>Guardar Boletín</button>
+              <!-- Botón de cerrar sesión movido aquí -->
+              <button id="logout-noticias-button" class="editor-button logout">Cerrar Sesión</button>
             </div>
 
             <!-- Sección Derecha: Noticias -->
@@ -218,8 +258,10 @@
       <!-- Ventana Modal para el Editor de Cronogramas -->
       <div id="modal-editor" class="modal">
         <div class="modal-content editor-modal">
-          <!-- 1. Título -->
-          <h2>Editar Cronogramas</h2>
+          <div class="modal-header">
+            <!-- 1. Título -->
+            <h2>Editar Cronogramas</h2>            
+          </div>
 
           <!-- 2 & 3. Selectores de Año y Mes -->
           <div class="selectors-container">
@@ -239,6 +281,7 @@
           <!-- 5. Botones de Acción -->
           <div class="action-buttons">
             <button id="editor-cancel-button" class="editor-button cancel">Descargar cambios y salir</button>
+            <button id="logout-cronograma-button" class="editor-button logout">Cerrar Sesión</button>
             <button id="editor-save-button" class="editor-button save">Guardar cambios y salir</button>
           </div>
         </div>

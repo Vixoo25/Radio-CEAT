@@ -1,5 +1,5 @@
 <?php
-session_start(); // Iniciar sesión para manejar el estado del usuario
+session_start();
 header('Content-Type: application/json');
 require_once 'conn.php';
 
@@ -28,6 +28,10 @@ if ($data && isset($data['username']) && isset($data['password'])) {
                 $response['success'] = true;
                 $response['message'] = 'Inicio de Sesión Exitoso';
                 $response['role'] = $user['role']; // Devolvemos el rol para que JS sepa qué modal abrir
+
+                // Guardamos el estado de la sesión en el servidor
+                $_SESSION['user_logged_in'] = true;
+                $_SESSION['user_role'] = $user['role'];
             } else {
                 // Contraseña incorrecta
                 $response['message'] = 'Usuario y/o Contraseña incorrectos, intente nuevamente';

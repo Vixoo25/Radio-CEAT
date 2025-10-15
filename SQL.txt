@@ -44,22 +44,36 @@ CREATE TABLE `noticias` (
 
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
+  `username` varchar(191) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role` varchar(50) NOT NULL COMMENT 'Define el permiso: cronograma o noticias',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
 --
 -- Volcado de datos para la tabla `usuarios`
--- IMPORTANTE: Después de importar, debes generar un nuevo hash para la contraseña
--- que desees usar (ej: 'admin1234') con el script 'generar_hash.php' y
--- actualizar estos registros.
 --
 
 INSERT INTO `usuarios` (`username`, `password_hash`, `role`) VALUES
-('admin', 'POR_ACTUALIZAR', 'cronograma'),
-('admin2', 'POR_ACTUALIZAR', 'noticias');
+('admin', '$2y$10$o.LpQ.rStU.vWxYz.aBcDe.fGhIjKlMnOpQrStUvWxYzAbCdEfGhI', 'admin_total'),
+('cgaete@ceat.cl', '$2y$10$g/yL0oB.sR/0q.Z/1.X/2.u.3.V.4.W.5.Y.6.Z.7.a.', 'cronograma'),
+('smartel@ceat.cl', '$2y$10$g/yL0oB.sR/0q.Z/1.X/2.u.3.V.4.W.5.Y.6.Z.7.a.', 'noticias');
 
 -- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mensajes_oyentes`
+-- Almacena los mensajes enviados por los oyentes desde la página.
+--
+
+CREATE TABLE `mensajes_oyentes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gmail` varchar(255) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `mensaje` text NOT NULL,
+  `fecha_envio` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
