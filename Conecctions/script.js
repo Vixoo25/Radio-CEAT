@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await response.json();
 
       loginMessage.textContent = result.message;
-      if (result.success && result.role === 'cronograma') {
+      if (result.success && (result.role === 'cronograma' || result.role === 'admin_total')) {
         loginMessage.className = "success-message";
         setTimeout(() => {
           closeLoginModal();
@@ -347,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await response.json();
 
       loginNoticiasMessage.textContent = result.message;
-      if (result.success && result.role === 'noticias') {
+      if (result.success && (result.role === 'noticias' || result.role === 'admin_total')) {
         loginNoticiasMessage.className = "success-message";
         setTimeout(() => {
           closeLoginNoticiasModal();
