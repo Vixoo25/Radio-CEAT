@@ -565,6 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const noticiaPreview = document.getElementById("noticia-preview");
   const saveNoticiaButton = document.getElementById("save-noticia-button");
   const cancelEditNoticiaButton = document.getElementById("cancel-edit-noticia-button");
+  const formNoticia = document.getElementById("form-noticia");
 
   // Lógica de Drag & Drop para la imagen de la noticia
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -715,7 +716,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Función para limpiar el formulario de noticias
   const resetFormularioNoticia = () => {
-    document.getElementById("form-noticia").reset();
+    formNoticia.reset();
     document.getElementById("noticia-id").value = "";
     fileInfoNoticia.textContent = "";
     noticiaPreview.style.display = 'none';
@@ -935,7 +936,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Esto asegura que la descripción se guarde en la BD en el momento.
       try {
         // Solo intentamos la petición si el ID no es temporal
-        if (!String(currentEditingId).startsWith('temp-')) { // No hay cambio de ruta aquí, ya que el archivo no existe en el contexto.
+        if (!String(currentEditingId).startsWith('temp-')) {
           const response = await fetch('Conecctions/php/gestionar_cronograma.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

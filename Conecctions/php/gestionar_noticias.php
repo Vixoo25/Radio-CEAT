@@ -68,7 +68,7 @@ if ($method === 'POST') {
         $result = $stmt->get_result();
         if ($row = $result->fetch_assoc()) {
             $imagen_a_borrar = $uploadServerDir . $row['imagen'];
-            if (file_exists($imagen_a_borrar)) {
+            if (file_exists($imagen_a_borrar) && is_file($imagen_a_borrar)) {
                 unlink($imagen_a_borrar);
             }
         }

@@ -26,7 +26,7 @@ if (!is_writable($boletinServerDir)) {
     exit;
 }
 
-$action = isset($_GET['action']) ? $_GET['action'] : '';
+$action = $_REQUEST['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
 
 // --- Verificación de permisos para acciones de escritura ---
@@ -66,7 +66,6 @@ switch ($action) {
 
             // Validaciones básicas
             if ($file['error'] !== UPLOAD_ERR_OK) {
-                // Damos un mensaje de error más específico según el código de error.
                 $upload_errors = [
                     UPLOAD_ERR_INI_SIZE   => 'El archivo excede el tamaño máximo permitido por el servidor.',
                     UPLOAD_ERR_FORM_SIZE  => 'El archivo excede el tamaño máximo permitido en el formulario.',
