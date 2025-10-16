@@ -134,8 +134,25 @@ html {
     flex-basis: 0; /* Asegura que ambas columnas partan del mismo tamaño base */
     /* Nuevos estilos para centrar el botón */
     display: flex;
-    justify-content: center;
+    justify-content: space-around; /* Distribuye los botones con espacio */
+    align-items: flex-start; /* Alinea los items en la parte superior */
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 45px;
+  }
+
+  .spotify-item {
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    gap: 10px; /* Espacio entre el botón y el texto */
+  }
+
+  .spotify-item-label {
+    font-family: "Inter-Bold", Helvetica;
+    font-weight: 700;
+    color: #333;
+    font-size: 16px;
   }
 
   .pgina-principal .columna-spotify iframe {
@@ -143,24 +160,26 @@ html {
   }
 
   .circular-button {
-    width: 150px; /* Ancho del círculo */
-    height: 150px; /* Alto del círculo */
+    width: 120px; /* Reducimos el tamaño para que quepan ambos */
+    height: 120px; /* Reducimos el tamaño para que quepan ambos */
     background-color: #d9d9d9; /* Color de fondo gris claro */
     border: 3px solid #c0392b; /* Borde con un tono rojo */
     border-radius: 50%; /* Esto lo hace un círculo perfecto */
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex; /* Para centrar la futura imagen */
-    margin-top: 20px; /* Añadimos un margen superior para un mejor centrado visual */
-    justify-content: center;
-    align-items: center;
+    overflow: hidden; /* Oculta lo que se salga del círculo */
   }
 
   .circular-button img {
-    width: 95px; /* Tamaño de la imagen dentro del botón */
-    height: 95px;
-    object-fit: contain; /* Asegura que la imagen se ajuste sin deformarse */
+    width: 100%; /* La imagen ocupa todo el ancho del círculo */
+    height: 100%; /* La imagen ocupa todo el alto del círculo */
+    object-fit: cover; /* La imagen cubre el espacio, puede recortarse para encajar */
+  }
+
+  .circular-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   }
 
   .pgina-principal .rectangle-8 {
@@ -212,7 +231,7 @@ html {
     letter-spacing: 0;
     line-height: normal;
     letter-spacing: 1.2px;
-    margin-top: 75px; /* Espacio sobre el texto */
+    margin-top: 25px; /* Espacio sobre el texto */
   }
 
   .pgina-principal .span {
@@ -1102,7 +1121,8 @@ html {
     min-width: 300px;
   }
   
-  .pgina-principal .noticias-de-inter-s {
+  .pgina-principal .noticias-de-inter-s,
+  .pgina-principal .boletin {
     font-family: "Inter-BlackItalic", Helvetica;
     font-weight: 900;
     font-style: italic;
@@ -1173,50 +1193,44 @@ html {
     flex-direction: column;
     gap: 20px; 
     flex: 1; /* Ocupa 1/3 del espacio */
+    padding: 15px 0 15px 15px; /* Margen arriba, abajo e izquierda para el PDF */
     min-width: 300px;
   }
   
   .pgina-principal .boletin-cuerpo {
     max-width: 100%;
     height: auto;
-    aspect-ratio: 1 / 1.49; /* Proporción A4 */
-    background-color: #d9d9d9; /* Fondo gris por defecto */
-    border-radius: 0; /* Eliminamos las esquinas redondeadas */
+    aspect-ratio: 0.94 / 1.43; /* Proporción A4 */
+    background-color: transparent; /* Fondo invisible */
     position: relative; /* Contenedor para posicionar el overlay */
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden; /* Asegura que el iframe redondeado se vea bien */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer; /* Cambia el cursor a una mano por defecto */
   }
 
-  .pgina-principal .boletin-cuerpo:not(.no-boletin):hover {
-    transform: scale(1);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  /* Nuevo contenedor para centrar el iframe y ocultar sus bordes/scroll */
+  .pdf-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex; /* Usamos flexbox para centrar el iframe */
+    justify-content: center;
+    align-items: center;
   }
 
-  .pgina-principal .boletin-cuerpo.no-boletin {
-    cursor: default; /* El cursor vuelve a ser una flecha */
-  }
-
-  .pgina-principal .boletin-cuerpo iframe,
   .pgina-principal .boletin-overlay-link {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 0; /* Eliminamos también el redondeo del contenido interno */
+    z-index: 2; /* Asegura que el enlace esté por encima del iframe */
   }
-  
-  .pgina-principal .boletin {
-    font-family: "Inter-BlackItalic", Helvetica;
-    font-weight: 900;
-    font-style: italic;
-    color: #333;
-    font-size: 22px; /* Reducido */
-    text-align: center;
+
+  .pgina-principal .boletin-cuerpo iframe {
+    width: calc(100% + 20px);  /* Hacemos el iframe más ancho que su contenedor */
+    height: calc(100% + 20px); /* y más alto */
   }
   
   .pgina-principal .p {
@@ -1629,11 +1643,6 @@ html {
   text-align: center;
 }
 
-/* Efecto hover para el nuevo botón circular */
-.circular-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-}
 .modal-header h2 {
   margin: 0;
   flex-grow: 1; /* Ocupa el espacio disponible */
@@ -1682,4 +1691,85 @@ html {
   .pgina-principal .noticias-grid {
     grid-template-columns: 1fr; /* 1 columna en móviles */
   }
+}
+
+/*
+========================================
+  Animación de Scroll
+========================================
+*/
+
+.fade-in-section {
+  /* Estado inicial: invisible y encogido */
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in-section.is-visible {
+  /* Estado final: visible y en su tamaño normal */
+  opacity: 1;
+  transform: scale(1);
+}
+
+/*
+========================================
+  Modal de Mensajes de Oyentes
+========================================
+*/
+
+.ver-mensajes-modal {
+  max-width: 800px;
+  min-height: auto;
+  max-height: 80vh; /* Altura máxima para que no ocupe toda la pantalla */
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.lista-mensajes {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto; /* Scroll si hay muchos mensajes */
+  padding-right: 10px;
+}
+
+.mensaje-item {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.mensaje-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mensaje-nombre {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  color: #333;
+}
+
+.mensaje-gmail {
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 13px;
+  color: #666;
+}
+
+.mensaje-actions {
+  display: flex;
+  gap: 10px;
+}
+
+#mensaje-completo-fecha {
+  margin-top: -15px; /* Lo acerca un poco al email */
+  font-size: 14px; /* Un poco más pequeño */
 }

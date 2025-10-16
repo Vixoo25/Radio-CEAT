@@ -246,6 +246,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const cronogramaInicioInput = document.getElementById("cronograma-inicio");
   const cronogramaFinInput = document.getElementById("cronograma-fin");
 
+  // --- Nuevos Elementos para Mensajes de Oyentes ---
+  const verMensajesButton = document.getElementById("ver-mensajes-button");
+  const modalVerMensajes = document.getElementById("modal-ver-mensajes");
+  const closeVerMensajesButton = modalVerMensajes.querySelector(".close-button");
+  const listaMensajesOyentes = document.getElementById("lista-mensajes-oyentes");
+
   const cronogramaDescripcionInput = document.getElementById("cronograma-descripcion");
   let currentEditingId = null; // Variable para guardar el ID del cronograma que se está editando
   let currentEditingDate = null; // Variable para guardar la fecha que se está editando
@@ -860,7 +866,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cronogramaFechaSubtitulo.textContent = `${day}/${month}/${year}`;
     // Forzamos la carga desde la BD al abrir el modal
     calendarioProgramacion[fecha] = await fetchProgramacion(fecha);
-
+  
     // --- Nueva Lógica: Renderizar cronogramas existentes ---
     // Usamos la misma función 'renderizarProgramacion' pero en el nuevo contenedor
     renderizarProgramacionEnModal(fecha, listaCronogramasExistentes);
@@ -1064,6 +1070,140 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // --- Funciones de Utilidad de Tiempo para Mensajes ---
+  const formatRelativeTime = (timestamp) => {
+    const now = new Date();
+    // Aseguramos que la fecha del servidor (UTC) se interprete correctamente
+    const past = new Date(timestamp.replace(' ', 'T') + 'Z');
+    const diffInSeconds = Math.floor((now - past) / 1000);
+
+    const minutes = Math.floor(diffInSeconds / 60);
+    if (minutes < 1) return "hace unos segundos";
+    if (minutes < 60) return `hace ${minutes} minuto${minutes > 1 ? 's' : ''}`;
+
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `hace ${hours} hora${hours > 1 ? 's' : ''}`;
+
+    const days = Math.floor(hours / 24);
+    return `hace ${days} día${days > 1 ? 's' : ''}`;
+  };
+
+  const formatFullDateTime = (timestamp) => {
+    const date = new Date(timestamp.replace(' ', 'T') + 'Z');
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // La hora 0 debe ser 12
+    const strTime = `${hours}:${minutes} ${ampm}`;
+
+    return `${day}/${month}/${year} - ${strTime}`;
+  };
+
+  // --- Lógica para el Modal de Mensajes de Oyentes ---
+
+  const modalVerMensajeCompleto = document.getElementById("modal-ver-mensaje-completo");
+  const closeVerMensajeCompletoButton = modalVerMensajeCompleto.querySelector(".close-button");
+
+  // Abrir modal de lista de mensajes
+  verMensajesButton.addEventListener("click", () => {
+    modalVerMensajes.style.display = "flex";
+    renderizarMensajes();
+  });
+
+  // Cerrar modal de lista de mensajes
+  closeVerMensajesButton.addEventListener("click", () => {
+    modalVerMensajes.style.display = "none";
+  });
+
+  // Cerrar modal de mensaje completo
+  closeVerMensajeCompletoButton.addEventListener("click", () => {
+    modalVerMensajeCompleto.style.display = "none";
+  });
+
+  // Función para obtener y mostrar los mensajes
+  const renderizarMensajes = async () => {
+    listaMensajesOyentes.innerHTML = '<p class="no-programacion">Cargando mensajes...</p>';
+    try {
+      const response = await fetch('Conecctions/php/obtener_mensajes.php');
+      const mensajes = await response.json();
+
+      listaMensajesOyentes.innerHTML = "";
+      if (mensajes.length > 0) {
+        mensajes.forEach(msg => {
+          const item = document.createElement('div');
+          item.className = 'mensaje-item';
+          item.dataset.id = msg.id;
+          item.dataset.nombre = msg.nombre;
+          item.dataset.gmail = msg.gmail;
+          item.dataset.mensaje = msg.mensaje;
+          item.dataset.fecha = msg.fecha_envio; // Guardamos la fecha completa
+
+          item.innerHTML = `
+            <div class="mensaje-info">
+              <span class="mensaje-nombre">${msg.nombre}</span>
+              <span class="mensaje-gmail">${msg.gmail}</span>
+              <span class="mensaje-gmail">Recibido: ${formatRelativeTime(msg.fecha_envio)}</span>
+            </div>
+            <div class="mensaje-actions">
+              <button class="editor-button save open-msg">Abrir</button>
+              <button class="editor-button cancel delete-msg">Leído</button>
+            </div>
+          `;
+          listaMensajesOyentes.appendChild(item);
+        });
+      } else {
+        listaMensajesOyentes.innerHTML = '<p class="no-programacion">No hay mensajes nuevos.</p>';
+      }
+    } catch (error) {
+      listaMensajesOyentes.innerHTML = '<p class="no-programacion">Error al cargar los mensajes.</p>';
+      console.error("Error al obtener mensajes:", error);
+    }
+  };
+
+  // Usar delegación de eventos para manejar los clics en los botones de los mensajes
+  listaMensajesOyentes.addEventListener("click", async (e) => {
+    const target = e.target;
+    const mensajeItem = target.closest('.mensaje-item');
+    if (!mensajeItem) return;
+
+    const id = mensajeItem.dataset.id;
+
+    // Si se hace clic en "Abrir"
+    if (target.classList.contains('open-msg')) {
+      document.getElementById('mensaje-completo-nombre').textContent = mensajeItem.dataset.nombre;
+      document.getElementById('mensaje-completo-gmail').textContent = `(${mensajeItem.dataset.gmail})`;
+      document.getElementById('mensaje-completo-fecha').textContent = formatFullDateTime(mensajeItem.dataset.fecha);
+      document.getElementById('mensaje-completo-texto').textContent = mensajeItem.dataset.mensaje;
+      modalVerMensajeCompleto.style.display = "flex";
+    }
+
+    // Si se hace clic en "Leído" (eliminar)
+    if (target.classList.contains('delete-msg')) {
+      if (confirm("¿Marcar este mensaje como leído? Se eliminará de la lista.")) {
+        try {
+          const response = await fetch('Conecctions/php/gestionar_mensajes.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', id: id })
+          });
+          const result = await response.json();
+          if (result.success) {
+            mensajeItem.remove(); // Elimina el elemento del DOM
+          } else {
+            alert(result.message);
+          }
+        } catch (error) {
+          alert("Error de conexión al eliminar el mensaje.");
+        }
+      }
+    }
+  });
+
   // Función para añadir listeners a los botones "Ver descripción"
   const addEventListenersToVerDescripcion = () => {
     document.querySelectorAll('.ver-descripcion-btn').forEach(button => {
@@ -1197,4 +1337,24 @@ document.addEventListener("DOMContentLoaded", () => {
   updateBoletinViewer();
   // Cargar las noticias al iniciar la página
   renderizarNoticiasEnPaginaPrincipal();
+
+  // --- Lógica para Animación al Hacer Scroll ---
+  const sectionsToAnimate = document.querySelectorAll('.fade-in-section');
+
+  const observerOptions = {
+    root: null, // Observa en relación al viewport
+    rootMargin: '0px',
+    threshold: 0.1 // La animación se activa cuando el 10% del elemento es visible
+  };
+
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target); // Dejamos de observar el elemento una vez animado
+      }
+    });
+  }, observerOptions);
+
+  sectionsToAnimate.forEach(section => observer.observe(section));
 });

@@ -53,7 +53,7 @@ switch ($action) {
             $response = [
                 'success' => true,
                 'filename' => basename($currentFile),
-                'filepath' => $boletinWebDir . basename($currentFile) . '?v=' . time() . '#toolbar=0' // Añadimos #toolbar=0 para ocultar la barra del visor PDF
+                'filepath' => $boletinWebDir . basename($currentFile) . '?v=' . time() . '#toolbar=0&scrollbar=0' // Ocultamos la barra de herramientas Y la de scroll
             ];
         } else {
             $response = ['success' => false, 'message' => 'No se encontró ningún boletín.'];

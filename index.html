@@ -20,7 +20,7 @@
         <div class="text-wrapper-15">Conectando la comunidad educativa</div>
       </div>
 
-      <div class="seccin-reproductor">
+      <div class="seccin-reproductor fade-in-section">
         <!-- Contenedor principal para las dos columnas -->
         <div class="contenido-reproductor">
           <!-- Columna Izquierda: Radio -->
@@ -54,17 +54,29 @@
             </p>
           </div>
           <!-- Columna Derecha: Spotify -->
-          <div class="columna-spotify">            
-            <!-- Nuevo botón circular que reemplaza a Spotify -->
-            <a href="https://open.spotify.com/show/0A9TSHjbKjdH4MVrMz5S3Y?si=5fcfaa6bd55848d6" target="_blank" rel="noopener noreferrer">
-              <div id="circular-action-button" class="circular-button">
-                <img src="./Conecctions/assets/CeatPodcast.png" alt="Ir al Podcast de CEAT">
-              </div>
-            </a>
+          <div class="columna-spotify">
+            <!-- Item 1: Podcast -->
+            <div class="spotify-item">
+              <a href="https://open.spotify.com/show/0A9TSHjbKjdH4MVrMz5S3Y?si=5fcfaa6bd55848d6" target="_blank" rel="noopener noreferrer">
+                <div class="circular-button">
+                  <img src="./Conecctions/assets/CeatPodcast.png" alt="Ir al Podcast de CEAT">
+                </div>
+              </a>
+              <p class="spotify-item-label">CEAT Podcast</p>
+            </div>
+            <!-- Item 2: Himno -->
+            <div class="spotify-item">
+              <a href="https://www.youtube.com/watch?v=oua_1M2xtmk" target="_blank" rel="noopener noreferrer">
+                <div class="circular-button">
+                  <img src="./Conecctions/assets/Himno-del-CEAT.png" alt="Escuchar Himno del CEAT">
+                </div>
+              </a>
+              <p class="spotify-item-label">Nuestro Himno</p>
+            </div>
           </div>
         </div>
       </div>
-      <div class="seccin-programacin">
+      <div class="seccin-programacin fade-in-section">
         <div id="open-login-modal" class="programaci-n-diaria login-trigger">Programación diaria&nbsp;&nbsp;(<span id="current-date"></span>)</div>
         <div class="pruebas-de">
           <!-- La programación diaria se generará con JavaScript -->
@@ -94,7 +106,7 @@
           </div>
         </div>
       </div>
-      <div class="noticias">
+      <div class="noticias fade-in-section">
         <!-- Título principal de la sección -->
         <div id="open-login-noticias-modal" class="text-wrapper-2 login-trigger">Noticias / Blogs</div>
 
@@ -103,9 +115,11 @@
           <!-- Columna Izquierda: Boletín -->
           <div class="zona-boletn">
             <div class="boletin">Boletín Semanal</div> 
-            <div id="boletin-cuerpo" class="boletin-cuerpo">
-              <iframe id="boletin-pdf-viewer" src="" width="100%" height="100%" style="border: none;"></iframe>
-              <a id="boletin-overlay-link" href="#" target="_blank" rel="noopener noreferrer" class="boletin-overlay-link"></a>
+            <div id="boletin-cuerpo" class="boletin-cuerpo"> <!-- Contenedor exterior que recorta -->
+              <div class="pdf-wrapper"> <!-- Contenedor interior que centra el iframe -->
+                <iframe id="boletin-pdf-viewer" src="" style="border: none;"></iframe>
+              </div>
+              <a id="boletin-overlay-link" href="#" target="_blank" rel="noopener noreferrer" class="boletin-overlay-link"></a> <!-- Enlace movido aquí -->
               <p id="boletin-texto" class="p" style="display: none;">No hay boletín disponible.</p>
             </div>
           </div>
@@ -121,7 +135,7 @@
       </div>
 
       <!-- Nueva Sección: Envío de Mensajes -->
-      <div class="seccin-mensajes">
+      <div class="seccin-mensajes fade-in-section">
         <h2 class="text-wrapper-2">¡Envíanos un Mensaje!</h2>
         <p class="subtitulo-seccion">Tus saludos, sugerencias o comentarios son bienvenidos.</p>
         
@@ -280,9 +294,10 @@
 
           <!-- 5. Botones de Acción -->
           <div class="action-buttons">
-            <button id="editor-cancel-button" class="editor-button cancel">Descargar cambios y salir</button>
+            <button id="editor-cancel-button" class="editor-button cancel">Descartar cambios y salir</button>
             <button id="logout-cronograma-button" class="editor-button logout">Cerrar Sesión</button>
-            <button id="editor-save-button" class="editor-button save">Guardar cambios y salir</button>
+            <button id="ver-mensajes-button" class="editor-button logout">Ver Mensajes</button> <!-- Botón movido aquí -->
+            <button id="editor-save-button" class="editor-button save">Guardar Cambios</button>
           </div>
         </div>
       </div>
@@ -347,6 +362,31 @@
           <!-- Contenedor de la descripción -->
           <div class="descripcion-contenido">
             <p id="descripcion-texto"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ventana Modal para Ver Mensajes de Oyentes -->
+      <div id="modal-ver-mensajes" class="modal">
+        <div class="modal-content ver-mensajes-modal">
+          <span class="close-button">&times;</span>
+          <h2 class="titulo-semanal">Mensajes Recibidos</h2>
+          
+          <div id="lista-mensajes-oyentes" class="lista-mensajes">
+            <!-- Los mensajes se cargarán aquí con JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Ventana Modal para Ver un Mensaje Completo -->
+      <div id="modal-ver-mensaje-completo" class="modal">
+        <div class="modal-content descripcion-cronograma-modal">
+          <span class="close-button">&times;</span>
+          <h2 id="mensaje-completo-nombre"></h2>
+          <p id="mensaje-completo-gmail" class="hora-subtitulo"></p>
+          <p id="mensaje-completo-fecha" class="hora-subtitulo"></p> <!-- Nuevo elemento para la fecha -->
+          <div class="descripcion-contenido">
+            <p id="mensaje-completo-texto"></p>
           </div>
         </div>
       </div>
