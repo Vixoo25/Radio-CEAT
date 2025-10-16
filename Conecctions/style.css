@@ -1,0 +1,1685 @@
+/* Establecemos un tamaño de fuente base más pequeño para escalar toda la UI */
+html {
+  font-size: 14px; /* 1rem = 14px en lugar de 16px */
+}
+
+/* --- Estilos Generales de la Página --- */
+
+.pgina-principal {
+  background-color: #ffffff;
+  width: 100%;
+  overflow-x: hidden; /* Evita el desbordamiento horizontal */
+
+  /* 1. Convertimos la página en un contenedor flexible */
+  display: flex;
+  flex-direction: column; /* Apilamos las secciones verticalmente */
+  align-items: center; /* Centramos las secciones horizontalmente */
+  gap: 20px; /* Espacio entre cada sección (reducido aún más) */ 
+  /* 
+    El padding-top se calculará con JS para ajustarse a la altura real de la barra.
+    Usamos una variable CSS para que JS pueda actualizarla fácilmente.
+  */
+  padding-top: var(--top-bar-height, 200px); /* Valor inicial de 200px como fallback */
+}
+
+/*
+========================================
+  Barra Superior (Header / Top Bar)
+========================================
+*/
+
+  .pgina-principal .top-bar {
+    /* 1. Posición fija y dimensiones adaptables */
+    position: fixed; /* Se queda fija en la parte superior */
+    width: 100%; /* Ocupa todo el ancho */  
+    min-height: 130px; /* Altura mínima para asegurar visibilidad */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Asegura que esté por encima de otro contenido */
+
+    /* 2. Usamos Flexbox para alinear los elementos */
+    display: flex;
+    align-items: center;      /* Centra los elementos verticalmente */
+    justify-content: center;  /* Centra los elementos horizontalmente */ 
+    padding: 0 2%; /* Añade un poco de espacio en los bordes */
+    background-color: #550000; /* Aplicamos el fondo directamente aquí */
+    border-bottom: 1px solid #696969; /* Mantenemos el borde inferior */
+  }
+
+  .pgina-principal .rectangle-11 {
+    /* Este elemento ya no es necesario, el fondo se aplica al .top-bar */
+    display: none;
+  }
+
+  .pgina-principal .ceat-logo {
+    /* 3. Estilos para el Logo */
+    /* Usamos un tamaño fijo para asegurar la visibilidad */
+    height: clamp(60px, 10vh, 80px); /* Reducido */
+    width: clamp(60px, 10vh, 80px); /* Reducido */
+    object-fit: contain; 
+    display: block; /* Aseguramos que se comporte como un bloque */
+    background-color: #ffffff; /* Fondo blanco para resaltar */
+    border-radius: 15%;        /* Hacemos el fondo circular */
+    padding: 5px;              /* Pequeño espacio para que el logo "respire" */
+    /* Añadimos transición para el hover */
+    transition: transform 0.3s ease;
+  }
+
+  .pgina-principal .text-wrapper-16 {
+    /* 4. Estilos para el Título Principal */
+    font-family: "Impact-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    /* Usamos unidades relativas para el tamaño de fuente */
+    font-size: clamp(1.2rem, 2.5vw, 2rem); /* Reducido */
+    letter-spacing: 3px;
+    line-height: normal;
+    white-space: normal; /* Permitimos que el texto se divida si es necesario */
+    margin-left: 20px; /* Espacio a la izquierda del logo */
+  }
+
+  .pgina-principal .text-wrapper-15 {
+    /* 5. Estilos para el Subtítulo */
+    font-family: "Impact-Regular", Helvetica;
+    font-weight: 400;
+    color: #a6a6a6;
+    font-size: clamp(0.7rem, 1.2vw, 1rem); /* Reducido */
+    letter-spacing: 1.5px;
+    line-height: normal;
+    margin-left: 25px; /* Espacio a la izquierda del título */ 
+    white-space: nowrap;
+  }
+
+/*
+========================================
+  Sección del Reproductor de Radio
+========================================
+*/
+
+  .pgina-principal .seccin-reproductor {
+    /* 2. Hacemos el contenedor del reproductor responsive */
+    position: relative; /* Para posicionar elementos internos si es necesario */
+    width: 75%; /* Reducido al 75% para más espacio en los bordes */
+    max-width: 1080px; /* Reducido para que sea más compacto en pantallas grandes */
+    padding: 25px; /* Espacio interno reducido */
+    /* Ya no necesitamos el padding extra, el contenido lo define */
+    background-color: #f9f9f9;
+    border-radius: 25px;
+    box-shadow: 0px 10px 24px #00000040;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Contenedor principal para las columnas de radio y spotify */
+  .pgina-principal .contenido-reproductor {
+    display: flex;
+    flex-wrap: wrap; /* Para que se apilen en pantallas pequeñas */
+    gap: 30px; /* Espacio entre el reproductor de radio y el de Spotify */
+    width: 100%;
+    align-items: flex-start; /* Alinea las columnas en la parte superior */
+  }
+
+  .pgina-principal .columna-radio {
+    flex: 1; /* Ocupa el espacio disponible */
+    min-width: 300px; /* Ancho mínimo antes de que se apile */
+    flex-basis: 0; /* Asegura que ambas columnas partan del mismo tamaño base */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espacio entre los elementos internos (En vivo, título, etc) */
+  }
+
+  .pgina-principal .columna-spotify {
+    flex: 1; /* Ocupa el espacio disponible */
+    min-width: 300px; /* Ancho mínimo */
+    flex-basis: 0; /* Asegura que ambas columnas partan del mismo tamaño base */
+    /* Nuevos estilos para centrar el botón */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .pgina-principal .columna-spotify iframe {
+    display: none; /* Ocultamos el iframe por si acaso */
+  }
+
+  .circular-button {
+    width: 150px; /* Ancho del círculo */
+    height: 150px; /* Alto del círculo */
+    background-color: #d9d9d9; /* Color de fondo gris claro */
+    border: 3px solid #c0392b; /* Borde con un tono rojo */
+    border-radius: 50%; /* Esto lo hace un círculo perfecto */
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; /* Para centrar la futura imagen */
+    margin-top: 20px; /* Añadimos un margen superior para un mejor centrado visual */
+    justify-content: center;
+    align-items: center;
+  }
+
+  .circular-button img {
+    width: 95px; /* Tamaño de la imagen dentro del botón */
+    height: 95px;
+    object-fit: contain; /* Asegura que la imagen se ajuste sin deformarse */
+  }
+
+  .pgina-principal .rectangle-8 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none; /* El fondo ahora está en .seccin-reproductor */
+  }
+
+  .pgina-principal .botn-de-inicio-de {
+    /* Eliminamos la posición absoluta y ajustamos para el footer */
+    position: static;
+    background-color: #555555;
+    border-radius: 15px;
+    padding: 10px 15px;
+    cursor: pointer;
+    align-self: center; /* Lo centramos verticalmente con los otros elementos */
+  }
+
+  .pgina-principal .rounded-rectangle {
+    position: absolute;
+    width: 98.78%;
+    height: 100.00%;
+    top: 0;
+    left: 0;
+    display: none;
+  }
+
+  .pgina-principal .text-wrapper-6 {
+    /* "Iniciar Sesión" */
+    font-family: "Impact-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 1.5px;
+    line-height: normal;
+  }
+
+  .pgina-principal .en-caso-de-no {
+    /* Lo convertimos en un elemento de bloque normal */
+    position: static;
+    font-family: "Inter-Black", Helvetica;
+    font-weight: 700;
+    color: #333; /* Cambiado a blanco para que sea visible */
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: normal;
+    letter-spacing: 1.2px;
+    margin-top: 75px; /* Espacio sobre el texto */
+  }
+
+  .pgina-principal .span {
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-style: italic;
+    color: #ffffffe6;
+  }
+
+  .pgina-principal .fallback-link {
+    color: #ff6464; /* Color rojo para "este enlace" */
+    text-decoration: underline;
+  }
+
+  .pgina-principal .estado-de {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    font-family: "Inter-Black", Helvetica;
+    font-weight: 700;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .pgina-principal .text-wrapper-7 {
+    /* "Reproduciendo" - Oculto por defecto, JS lo mostrará */
+    display: none;
+  }
+
+  .pgina-principal .pausado {
+    /* "Pausado" - Visible por defecto */
+    display: inline;
+  }
+
+  .pgina-principal .player-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Para que se ajuste en móviles */
+    gap: 20px;
+  }
+
+  .pgina-principal .seccin-volumen {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pgina-principal .text-wrapper-9 {
+    /* "Volumen" */
+    text-shadow: 1px 1px 4px #ffffff96;
+    font-family: "Inter-BoldItalic", Helvetica;
+    font-weight: 700;
+    font-style: italic;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .pgina-principal .rectangle-9 {
+    /* Slider de volumen */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 150px;
+    height: 8px;
+    background: #d9d9d9;
+    outline: none;
+    border-radius: 5px;
+  }
+
+  .pgina-principal .rectangle-9::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #ff6464;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .pgina-principal .botn-de-reproducir {
+    /* Botón de Reproducir */
+    position: relative; /* Para el icono */
+    display: flex;
+    align-items: center;
+    justify-content: center;  
+    min-width: 180px; /* Reducido */
+    height: 40px; /* Reducido */
+    background-color: #ff6464;
+    border-radius: 25px;
+    color: #ffffff;  
+    font-family: "Inter-Black", Helvetica;
+    font-weight: 900;
+    font-size: 18px; /* Reducido */
+    gap: 10px;
+    padding: 0 25px;
+    cursor: pointer;
+    /* Añadimos una transición para animar los cambios */
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+
+  .pgina-principal .rectangle-10 {
+    display: none;
+  }
+
+  .pgina-principal .text-wrapper-11 {
+    /* Icono de play */
+    font-size: 24px;
+  }
+
+  .pgina-principal .text-wrapper-12 {
+    /* "Listo para reproducir" */
+    text-shadow: 1px 1px 4px #ffffff96;
+    font-family: "Inter-BoldItalic", Helvetica;
+    font-weight: 700;
+    font-style: italic;
+    color: #555;
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+
+  .pgina-principal .text-wrapper-13 {
+    /* "Señal en vivo" */
+    font-family: "Inter-Black", Helvetica;
+    font-weight: 900;
+    color: #333;
+    font-size: 24px; /* Reducido */
+    letter-spacing: 0;
+    line-height: normal;
+  }
+
+  .pgina-principal .estado-de-radio {
+    /* "En vivo" */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Ya no necesita align-self porque está dentro de una columna */
+  }
+
+  .pgina-principal .ellipse {
+    width: 24px;
+    height: 24px;
+    background-color: #ff0000;
+    border-radius: 12px;
+    box-shadow: 0px 0px 10px 10px #ff000040;
+  }
+
+  .pgina-principal .text-wrapper-14 {
+    /* "En vivo" */
+    height: 29px;
+    font-family: "Inter-Black", Helvetica;
+    font-weight: 900;
+    color: #333;
+    font-size: 18px; /* Reducido */
+    letter-spacing: 0;
+    line-height: normal;
+  }
+  
+/*
+========================================
+  Sección de Programación
+========================================
+*/
+
+  .pgina-principal .seccin-programacin {
+    /* 3. Hacemos la sección de programación responsive */
+    position: relative;
+    width: 75%; /* Reducido al 75% para más espacio en los bordes */
+    max-width: 1080px; /* Reducido para que sea más compacto */
+    padding: 25px; /* Reducido */
+    background-color: #f9f9f9;
+    border-radius: 25px;
+    box-shadow: 0px 10px 24px #00000040;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Permitimos que los hijos controlen su propia alineación */
+  }
+
+  .pgina-principal .rectangle-4 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1130px;
+    display: none; /* El fondo ahora está en .seccin-programacin */
+  }
+
+  .pgina-principal .botn-programacin {
+    /* Botón para ver programación semanal */
+    /* Hacemos el botón más pequeño y lo centramos */
+    max-width: 600px; /* Reducido */
+    height: 45px; /* Reducido */
+    margin-top: 20px; /* Espacio sobre el botón */
+    background-color: #d9d9d9;
+    border-radius: 15px;
+    align-self: flex-start; /* Alineamos el botón a la izquierda */
+    cursor: pointer;
+    /* Añadimos una transición para animar los cambios */
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+
+  .pgina-principal .rectangle-5 {
+    display: none;
+  }
+
+  .pgina-principal .text-wrapper-3 {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-weight: 900;
+    font-style: italic;
+    color: #000000;
+    /* Hacemos la fuente responsive con un tamaño mínimo y máximo */
+    font-size: clamp(12px, 2vw, 16px); /* Reducido */
+    text-align: center;
+    letter-spacing: 0;
+    line-height: normal;
+  }
+
+  .pgina-principal .pruebas-de {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: transparent; /* Eliminamos el fondo gris */
+    padding: 0; /* Eliminamos el padding */
+    align-self: stretch; /* Hacemos que se estire para ocupar el ancho disponible */
+
+    /* Nuevos estilos para el scroll */
+    max-height: 350px; /* Altura máxima antes de que aparezca el scroll */
+    overflow-y: auto; /* Habilita el scroll vertical si el contenido se desborda */
+  }
+
+  .pgina-principal .hora-de-emisin {
+    /* Contenedor de cada fila de la programación */
+    width: 100%;
+    min-height: 50px;
+    background-color: #d9d9d9;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Para separar info de acciones */
+    padding: 0 10px;
+    gap: 15px;
+    /* Añadimos una transición para animar los cambios */
+    transition: box-shadow 0.3s ease; /* Solo animamos la sombra en el contenedor */
+  }
+
+  .pgina-principal .programa-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .pgina-principal .rectangle-6 {
+    display: none;
+  }
+
+  .pgina-principal .rectangle-7 {
+    display: none;
+  }
+
+  .pgina-principal .text-wrapper-4 {
+    /* Estilos para la hora */
+    background-color: #ed6464;
+    border-radius: 25px;
+    padding: 5px 15px;
+    height: 30px;
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-weight: 900;
+    font-style: italic;
+    color: #ffffffe6;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    /* Añadimos transición para el movimiento */
+    transition: transform 0.3s ease;
+  }
+
+  .pgina-principal .text-wrapper-5 {
+    /* Estilos para el nombre del programa */
+    font-family: "Inter-Black", Helvetica;
+    font-weight: 900;
+    color: #000000;
+    font-size: 18px; /* Reducido */
+    white-space: nowrap;
+    overflow: hidden; /* Evita que el texto se desborde */
+    text-overflow: ellipsis; /* Añade "..." si el texto es muy largo */
+  }
+
+  .pgina-principal .hora-de-emisin-2 {
+    /* Esta clase ya no se usa, los estilos están en .hora-de-emisin */
+    display: none;
+  }
+
+  .pgina-principal .programaci-n-diaria {
+    /* Eliminamos posición absoluta */
+    margin-bottom: 20px; /* Espacio debajo del título */
+    display: flex;
+    align-items: center;
+    align-self: center; /* Centramos el título */
+    justify-content: center;
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-weight: 900;
+    font-style: italic;
+    color: #333;
+    font-size: 24px; /* Reducido */
+    text-align: center;
+    letter-spacing: 0;
+    line-height: normal;
+  }
+
+.login-trigger {
+  /* Cambia el cursor para indicar que es clickeable */
+  cursor: pointer;
+}
+
+.pgina-principal .hora-de-emisin .programa-actions {
+  /* Contenedor para el nuevo botón */
+  margin-left: auto; /* Empuja el botón a la derecha */
+}
+
+.pgina-principal .hora-de-emisin .ver-descripcion-btn {
+  /* Estilos para el botón "Ver descripción" */
+  padding: 5px 10px;
+  font-size: 12px;
+  /* Añadimos transición para el movimiento */
+  transition: transform 0.3s ease;
+}
+/* Estilos para la ventana modal */
+.modal {
+  display: none; /* Oculto por defecto */
+  position: fixed; /* Cubre toda la pantalla */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+  z-index: 1000; /* Asegura que esté por encima de todo */
+  overflow: auto; /* Añade scroll si el contenido es muy largo */
+  /* Estilos para centrar el contenido del modal (el .modal-content) */
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  position: relative;
+  background-color: #ffffff;
+  margin: 0; /* Eliminamos el margen que causaba el movimiento */
+  border: 5px solid #791214;
+  width: 80%;
+  max-width: 1184px; /* Ancho máximo del diseño original */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  border-radius: 10px;
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+  padding: 20px;
+  min-height: 500px; /* Aumentamos la altura vertical */
+}
+
+/* Animación para que aparezca desde arriba */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0}
+  to {top: 0; opacity: 1}
+}
+
+/* Nueva animación para que desaparezca hacia arriba */
+@keyframes animatebottom {
+  from {top: 0; opacity: 1}
+  to {top: -300px; opacity: 0}
+}
+
+/* --- Estilos para el contenido de la Programación Semanal (dentro del Modal) --- */
+
+.programacion-semanal-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 37px;
+}
+/* 1. Estilos para el título */
+.programacion-semanal-modal .titulo-semanal {
+  font-family: "Inter-Black", Helvetica;
+  font-weight: 900;
+  color: #000000;
+  font-size: 28px; /* Reducido */
+  text-align: center;
+  letter-spacing: 2.8px;
+  margin-bottom: 20px; /* Espacio debajo del título */
+}
+
+/* 2. Estilos para la fila de días */
+.programacion-semanal-modal .dias-semana {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* Espacio uniforme entre cada botón */
+}
+
+.programacion-semanal-modal .dia {
+  flex: 1; /* Permite que los botones crezcan y ocupen el espacio */
+  min-width: 150px; /* Ancho mínimo para cada día */
+  min-height: 60px; /* Usamos min-height para que pueda crecer si es necesario */
+  background-color: #ffc1c1;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column; /* Apilamos el día y la fecha verticalmente */
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px; /* Ajustamos el padding */
+  font-family: "Inter-BoldItalic", Helvetica;
+  font-weight: 700;
+  font-style: italic;
+  color: #000000;
+  font-size: 20px; /* Reducido */
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.2; /* Mejoramos el espaciado vertical */
+  /* Añadimos una transición para animar los cambios */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.programacion-semanal-modal .dia-fecha {
+  font-size: 12px; /* Tamaño más pequeño */
+  font-style: normal; /* Le quitamos la cursiva */
+  font-weight: 500; /* Un poco menos grueso que el día */
+  opacity: 0.7; /* Hacemos el texto más transparente */
+}
+
+/* Estilo para el día activo/seleccionado */
+.programacion-semanal-modal .dia.active {
+  background-color: #ed6464; /* Un color más oscuro para indicar selección */
+  color: #ffffff;
+  transform: scale(1.05); /* Un pequeño efecto de zoom */
+}
+
+/* 3. Estilos para el contenedor de la programación */
+.programacion-semanal-modal .contenido-dia-semanal {
+  width: 100%;
+  background-color: transparent; /* Eliminamos el fondo gris */
+  padding: 0; /* Eliminamos el padding */
+  box-sizing: border-box; /* Asegura que el padding no aumente el ancho */
+  
+  /* Añadimos flex para organizar los items de programación */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre cada programa */
+
+  /* Altura mínima y scroll */
+  min-height: 130px; /* Altura para ~2 items (50px cada uno + 10px de gap + padding) */
+  max-height: 400px; /* Altura máxima antes de que aparezca el scroll */
+  overflow-y: auto; /* Habilita el scroll vertical si el contenido se desborda */
+}
+
+/* Estilo para el mensaje de "sin programación" */
+.programacion-semanal-modal .no-programacion {
+  font-family: "Inter-BoldItalic", Helvetica;
+  font-size: 16px;
+  color: #e0e0e0;
+  text-align: center;
+  margin: auto; /* Centra el mensaje vertical y horizontalmente */
+}
+
+/* --- Estilos para cada item de programa en el modal --- */
+
+.programacion-semanal-modal .programa-item {
+  width: 100%;
+  min-height: 50px; /* Altura mínima */
+  background-color: #d9d9d9;
+  border-radius: 10px;
+  transition: filter 0.3s ease; /* Añadimos transición para el hover */
+  display: flex;
+  align-items: center;
+  padding: 5px 10px; /* Padding interno */
+  gap: 15px;
+  box-sizing: border-box;
+}
+
+.programacion-semanal-modal .programa-hora {
+  background-color: #ed6464;
+  border-radius: 25px;
+  padding: 5px 15px;
+  font-family: "Inter-BlackItalic", Helvetica;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffffe6;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.programacion-semanal-modal .programa-nombre {
+  font-family: "Inter-Black", Helvetica;
+  font-weight: 900;
+  color: #000000;
+  font-size: 18px; /* Un poco más pequeño para el modal */
+}
+
+/* Eliminamos las posiciones absolutas del diseño original */
+.programacion-semanal-modal * {
+  position: static;
+  margin: 0;
+  width: auto;
+  height: auto;
+  top: auto;
+  left: auto;
+}
+
+/* 
+========================================
+  Sección de Noticias y Boletín
+========================================
+*/
+
+/* --- Estilos para el Modal de Login --- */
+
+.login-modal {
+  max-width: 500px; /* Hacemos el modal más pequeño */
+  min-height: auto; /* La altura será automática */
+  margin: 0; /* Eliminamos el margen para que el centrado flex funcione */
+  padding: 40px;
+}
+
+.login-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-modal .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-modal label {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  color: #333;
+}
+
+.login-modal input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.login-modal .login-button {
+  padding: 15px;
+  background-color: #791214;
+  color: white;
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  /* Añadimos transición para el hover */
+  transition: transform 0.3s ease, filter 0.3s ease;
+  margin-top: 10px;
+}
+
+#login-message, #login-message-noticias {
+  text-align: center;
+  font-family: "Inter-Bold", Helvetica;
+  min-height: 20px; /* Para que no salte el layout */
+}
+
+.success-message {
+  color: green;
+}
+
+.error-message {
+  color: red;
+}
+
+/* --- Estilos para el Modal del Editor --- */
+
+.editor-modal {
+  max-width: 900px; /* Un modal más ancho para el calendario */
+  min-height: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.editor-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 32px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.selectors-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.editor-modal select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.calendar-container {
+  width: 100%;
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.calendar-header, .calendar-day {
+  text-align: center;
+  padding: 10px 5px;
+  font-family: "Inter-Bold", Helvetica;
+}
+
+.calendar-header {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.calendar-day {
+  background-color: #ffffff;
+  border-radius: 5px;
+  min-height: 80px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+  background-color: #e9e9e9;
+}
+
+.calendar-day.not-current-month {
+  background-color: transparent;
+  color: #aaa;
+  cursor: default;
+}
+
+.calendar-day.sunday {
+  color: red;
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;  
+  justify-content: space-between;
+  margin-top: auto; /* Empuja los botones al final */
+}
+
+.editor-button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  cursor: pointer;
+  /* Añadimos una transición para animar los cambios */
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.editor-button.cancel {
+  background-color: #c0392b; /* Rojo */
+}
+
+.editor-button.save {
+  background-color: #27ae60; /* Verde */
+}
+
+.editor-button.logout {
+  background-color: #555; /* Gris oscuro */
+}
+
+/* --- Estilos para el Modal de Añadir Cronograma --- */
+
+.add-cronograma-modal {
+  width: auto; /* La ventana se ajustará a su contenido */
+  min-width: 900px; /* Ancho mínimo igual al editor de calendario */
+  max-width: 90vw; /* Límite máximo para no ocupar toda la pantalla */
+  min-height: auto;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espacio entre elementos */
+}
+
+.add-cronograma-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 28px;
+  text-align: center;
+  font-weight: bold;
+  margin: 0;
+}
+
+.add-cronograma-modal .fecha-subtitulo {
+  font-family: "Inter-Italic", Helvetica;
+  font-style: italic;
+  color: #666;
+  opacity: 0.8;
+  font-size: 16px;
+  text-align: center;
+  margin-top: -10px; /* Lo acerca un poco al título */
+}
+
+.add-cronograma-modal .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-cronograma-modal label {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  color: #333;
+}
+
+.add-cronograma-modal input[type="text"],
+.add-cronograma-modal input[type="time"] {
+  /* Ya no forzamos el 100% para permitir que el modal se encoja */
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: "Inter-Regular", Helvetica;
+  /* El input crecerá con el contenedor flex */
+  flex-grow: 1;
+}
+
+.add-cronograma-modal .time-inputs-container {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.add-cronograma-modal .time-inputs-container .form-group {
+  flex: 1; /* Cada input de hora ocupa la mitad del espacio */
+}
+
+.add-cronograma-modal .cronogramas-existentes-container {
+  margin-top: 15px;
+}
+
+/* Estilo para la lista de cronogramas existentes, imitando a .pruebas-de */
+.add-cronograma-modal .lista-cronogramas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: transparent; /* Eliminamos el fondo gris */
+  padding: 0; /* Eliminamos el padding */
+  margin-top: 8px; /* Espacio desde el label */
+
+  /* Scroll si es necesario */
+  max-height: 200px; /* Altura máxima antes de que aparezca el scroll */
+  overflow-y: auto; /* Habilita el scroll vertical si el contenido se desborda */
+}
+
+.add-cronograma-modal .programa-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.add-cronograma-modal .action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px;
+  border-radius: 5px;
+  /* Añadimos transición para el hover */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.add-cronograma-modal .action-btn:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+.add-cronograma-modal .add-cronograma-actions {
+  display: flex;
+  justify-content: flex-end; /* Alinea el botón a la derecha */
+  margin-top: 10px;
+}
+
+.add-cronograma-modal textarea {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: "Inter-Regular", Helvetica;
+  resize: vertical; /* Permite redimensionar solo verticalmente */
+}
+
+/* --- Estilos para el Modal de Descripción de Cronograma --- */
+
+.descripcion-cronograma-modal {
+  max-width: 600px;
+  min-height: auto;
+  padding: 40px;
+  text-align: center;
+}
+
+.descripcion-cronograma-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.descripcion-cronograma-modal .hora-subtitulo {
+  font-family: "Inter-Italic", Helvetica;
+  font-style: italic;
+  color: #666;
+  opacity: 0.8;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.descripcion-cronograma-modal .descripcion-contenido {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 20px;
+  min-height: 100px;
+  max-height: 250px; /* Altura máxima antes de activar el scroll */
+  overflow-y: auto; /* Activa el scroll vertical solo si es necesario */
+  text-align: left;
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: break-word; /* Permite que las palabras largas se corten */
+}
+
+  .pgina-principal .noticias {
+    /* 4. Hacemos la sección de noticias responsive */
+    position: relative;
+    width: 75%; /* Reducido al 75% para más espacio en los bordes */
+    max-width: 1080px; /* Reducido para que sea más compacto */
+    padding: 25px;
+    background-color: #f9f9f9;
+    border-radius: 25px;
+    box-shadow: 0px 10px 24px #00000040;
+    display: flex;
+    flex-direction: column; /* Título arriba, contenido abajo */
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .pgina-principal .rectangle-2 {
+    display: none; /* El fondo ahora está en .noticias */
+  }
+
+  .pgina-principal .noticias-content {
+    display: flex;
+    flex-wrap: wrap; /* Para que se apilen en móviles */
+    gap: 30px;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .pgina-principal .noticias-de-inters {
+    /* Eliminamos posición absoluta */
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    flex: 2; /* Ocupa 2/3 del espacio */
+    min-width: 300px;
+  }
+  
+  .pgina-principal .noticias-de-inter-s {
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-weight: 900;
+    font-style: italic;
+    color: #333;
+    font-size: 22px; /* Reducido */
+    text-align: center;
+  }
+  
+  .pgina-principal .noticias-grid {
+    display: grid;
+    /* Crea 3 columnas de tamaño igual */
+    grid-template-columns: repeat(4, 1fr); /* Hacemos las noticias más pequeñas (4 por fila) */
+    gap: 20px;
+    /* Añadimos scroll si el contenido excede la altura máxima */
+    max-height: 550px; /* Altura aprox. para 2 filas de noticias */
+    overflow-y: auto;
+    padding-right: 10px; /* Espacio para la barra de scroll */
+  }
+  
+  .pgina-principal .noticia-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Añadimos una transición para animar los cambios */
+    transition: filter 0.3s ease; /* Solo el filtro de brillo en el item */
+  }
+  
+  .pgina-principal .noticia-imagen {
+    width: 100%;
+    aspect-ratio: 4 / 3; /* Proporción 4:3 */
+    background-color: #d9d9d9;
+    border-radius: 10px;
+    overflow: hidden; /* Para que la imagen escalada no se salga de los bordes redondeados */
+    transition: transform 0.3s ease; /* Transición para el efecto de escala */
+    background-size: cover; /* Asegura que la imagen cubra el área */
+    background-position: center; /* Centra la imagen */
+  }
+
+  .pgina-principal .noticia-item:hover .noticia-imagen {
+    transform: scale(1.08); /* La imagen hace el popout */
+  }
+
+
+  .pgina-principal .noticia-texto-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .pgina-principal .t-ejemplo {
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-weight: 700;
+    font-style: italic;
+    color: #333;
+    font-size: 16px; /* Mantener el tamaño original */
+  }
+
+  .pgina-principal .noticia-fecha {
+    font-size: 12px; /* Texto más pequeño */
+    opacity: 0.7; /* Más transparente */
+    font-style: normal; /* Le quitamos la cursiva para diferenciarlo del título */
+    margin-top: 4px;
+  }
+  
+  .pgina-principal .zona-boletn {
+    /* Eliminamos posición absoluta */
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    flex: 1; /* Ocupa 1/3 del espacio */
+    min-width: 300px;
+  }
+  
+  .pgina-principal .boletin-cuerpo {
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1.49; /* Proporción A4 */
+    background-color: #d9d9d9; /* Fondo gris por defecto */
+    border-radius: 0; /* Eliminamos las esquinas redondeadas */
+    position: relative; /* Contenedor para posicionar el overlay */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Asegura que el iframe redondeado se vea bien */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* Cambia el cursor a una mano por defecto */
+  }
+
+  .pgina-principal .boletin-cuerpo:not(.no-boletin):hover {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+
+  .pgina-principal .boletin-cuerpo.no-boletin {
+    cursor: default; /* El cursor vuelve a ser una flecha */
+  }
+
+  .pgina-principal .boletin-cuerpo iframe,
+  .pgina-principal .boletin-overlay-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0; /* Eliminamos también el redondeo del contenido interno */
+  }
+  
+  .pgina-principal .boletin {
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-weight: 900;
+    font-style: italic;
+    color: #333;
+    font-size: 22px; /* Reducido */
+    text-align: center;
+  }
+  
+  .pgina-principal .p {
+    position: static;
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-weight: 900;
+    font-style: italic;
+    color: #555555; /* Cambiamos el color para que contraste con el fondo claro */
+    font-size: 18px; /* Reducido */
+    text-align: center;
+  }
+  
+  .pgina-principal .text-wrapper-2 {
+    /* Título principal de la sección de noticias */
+    width: 100%; /* Ocupa todo el ancho */
+    font-family: "Inter-BlackItalic", Helvetica;
+    font-weight: 900;
+    font-style: italic;
+    color: #333;
+    font-size: 24px; /* Reducido */
+    text-align: center;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+/*
+========================================
+  Barra Inferior (Footer / Bottom Bar)
+========================================
+*/
+
+  .pgina-principal .bottom-bar {
+    /* 1. Hacemos la barra principal responsive */
+    width: 100%;
+    background-color: #550000;
+    border-top: 1px solid #696969;
+    padding: 40px 0; /* Aumentamos el espacio vertical */
+    margin-top: 50px; /* Espacio sobre el footer */
+    display: flex;
+    justify-content: center;
+  }
+
+  .pgina-principal .footer-content {
+    /* 2. Contenedor del contenido para centrarlo */
+    width: 90%;
+    max-width: 1130px; /* Ancho máximo igual a las otras secciones */
+    display: flex;
+    flex-direction: column; /* Apilamos las filas verticalmente */
+    align-items: center;
+    gap: 25px; /* Espacio entre las filas y las líneas */
+  }
+
+  .pgina-principal .footer-row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Espacio entre contacto y redes sociales */
+    align-items: center;
+    gap: 20px;
+  }
+
+  .pgina-principal .sugerencias-correo {
+    font-family: "Impact-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 12px; /* Reducido */
+    letter-spacing: 2px; 
+    line-height: 1.5;
+    text-align: right;
+  }
+
+  .pgina-principal .contactanos {
+    /* 3. Estilos de la sección de contacto */
+    font-family: "Impact-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 12px; /* Reducido */
+    letter-spacing: 2px;
+    line-height: 1.5; /* Mejora la legibilidad */
+    text-align: left; 
+  }
+
+  .pgina-principal .rectangle {
+    /* Ya no es necesario, el fondo está en .bottom-bar */
+    display: none;
+  }
+
+  .pgina-principal .RRSS {
+    /* 4. Contenedor de las redes sociales */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea el texto y los iconos a la derecha */ 
+    gap: 10px;
+  }
+
+  .pgina-principal .div {
+    /* "Síguenos en nuestras redes sociales" */
+    font-family: "Impact-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 12px; /* Reducido */
+    text-align: right;
+    letter-spacing: 2px;
+    line-height: normal;
+  }
+
+  .pgina-principal .social-icons {
+    display: flex;
+    gap: 10px; /* Espacio entre iconos */
+  }
+
+  .pgina-principal .RRSS img {
+    /* Estilo general para todos los iconos */
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    /* Añadimos una transición para animar los cambios */
+    transition: transform 0.3s ease;
+  }
+
+  .pgina-principal .line {
+    /* 5. Línea decorativa */
+    width: 100%; /* Ocupa todo el ancho del contenedor .footer-content */
+    height: 2px;
+    background-color: #ffffff80; /* Color blanco con 50% de opacidad */
+  }
+
+  .pgina-principal .text-wrapper {
+    /* 6. Texto de Copyright */
+    width: 100%; /* Ocupa todo el ancho */
+    font-family: "Impact-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffffcc;
+    font-size: 14px; /* Reducido */
+    text-align: center;
+    letter-spacing: 1.5px;
+    line-height: normal;
+  }
+
+  /* Eliminamos las reglas de posición absoluta para cada icono */
+  .pgina-principal .image,
+  .pgina-principal .flickr,
+  .pgina-principal .youtube,
+  .pgina-principal .twitter,
+  .pgina-principal .instagram,
+  .pgina-principal .facebook {
+    position: static;
+  }
+
+/* --- Estilos para el Modal del Editor de Boletín y Noticias --- */
+
+.editor-noticias-modal {
+  max-width: 900px;
+  min-height: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.editor-noticias-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 32px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.editor-noticias-content {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+}
+
+.editor-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}
+
+.editor-section h3 {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  font-family: "Inter-Regular", Helvetica;
+  color: #666;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: #791214;
+  background-color: #f9f2f2;
+}
+
+.file-select-link {
+  color: #791214;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.file-info {
+  text-align: center;
+  font-style: italic;
+  color: #333;
+}
+
+.current-file-container {
+  margin-top: 15px;
+}
+
+.current-file-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e9e9e9;
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+
+.drop-zone.small {
+  padding: 20px;
+  font-size: 13px;
+}
+
+/*
+========================================
+  Efectos Hover (Animaciones)
+========================================
+*/
+
+/* Efecto para botones generales */
+.pgina-principal .botn-de-reproducir:hover,
+.pgina-principal .botn-programacin:hover,
+.pgina-principal .login-button:hover,
+.pgina-principal .editor-button:hover {
+  transform: scale(1.03); /* Crece un 3% */
+  filter: brightness(1.15); /* Aumenta el brillo un 15% */
+}
+
+/* Efecto para los items de la programación diaria */
+.pgina-principal .hora-de-emisin:hover {
+  /* Aplicamos la sombra a los items de ambas listas */
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15); /* Añade una sombra */
+}
+.pgina-principal .hora-de-emisin:hover .text-wrapper-4 {
+  transform: translateX(-5px); /* Movemos la hora a la izquierda */
+}
+.pgina-principal .hora-de-emisin:hover .ver-descripcion-btn {
+  transform: translateX(5px); /* Movemos el botón a la derecha */
+}
+
+/* Efecto para las noticias */
+.pgina-principal .noticia-item:hover { /* Mantener el brillo en el item completo */
+  filter: brightness(1.1); /* Aumenta el brillo un 10% */
+}
+
+/* Efecto para el logo */
+.pgina-principal .ceat-logo:hover {
+  transform: scale(1.08); /* Crece un 8% */
+}
+
+/* Efecto para los iconos de redes sociales */
+.pgina-principal .social-icons a:hover img {
+  transform: scale(1.2); /* Crece un 20% */
+}
+
+/* Efecto para los días de la semana en el modal (que no estén activos) */
+.programacion-semanal-modal .dia:hover:not(.active) {
+  transform: scale(1.05);
+}
+
+/* Efecto para los items de programa en el modal de programación semanal */
+.programacion-semanal-modal .programa-item:hover {
+  filter: brightness(0.95);
+}
+
+/* Efecto para el botón de cerrar en todos los modales */
+.modal .close-button:hover {
+  transform: scale(1.2);
+  color: #333;
+}
+
+/* Efecto para los botones de acción (editar/borrar) en el modal de edición */
+.add-cronograma-modal .action-btn:hover {
+  transform: scale(1.15);
+  background-color: rgba(0,0,0,0.1);
+}
+
+/* Estilo genérico para todos los botones de cierre de modales */
+.modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  /* Añadimos transición para el hover */
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/*
+========================================
+  Sección de Mensajes de Oyentes
+========================================
+*/
+
+.seccin-mensajes {
+  position: relative;
+  width: 75%;
+  max-width: 1080px;
+  padding: 25px;
+  background-color: #f9f9f9;
+  border-radius: 25px;
+  box-shadow: 0px 10px 24px #00000040;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  color: #333;
+}
+
+.seccin-mensajes .subtitulo-seccion {
+  font-family: "Inter-Italic", Helvetica;
+  font-style: italic;
+  color: #666;
+  font-size: 16px;
+  margin-top: -15px;
+}
+
+.form-mensaje {
+  width: 100%;
+  max-width: 700px; /* Limita el ancho del formulario */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center; /* Centra el botón y el mensaje de estado */
+}
+
+.form-mensaje .form-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.form-mensaje .input-group-mensaje {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1; /* Para que los inputs en la fila ocupen el mismo espacio */
+  width: 100%;
+}
+
+.form-mensaje label {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  color: #333;
+}
+
+.form-mensaje input,
+.form-mensaje textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  border-color: #ccc;
+}
+
+.form-mensaje textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.mensaje-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.char-counter {
+  font-size: 14px;
+  color: #aaa;
+  transition: color 0.3s ease;
+}
+
+.char-counter.warning {
+  color: #e74c3c; /* Rojo */
+  font-weight: bold;
+}
+
+#mensaje-oyente-status {
+  min-height: 20px;
+  font-family: "Inter-Bold", Helvetica;
+  text-align: center;
+}
+
+/* Efecto hover para el nuevo botón circular */
+.circular-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+.modal-header h2 {
+  margin: 0;
+  flex-grow: 1; /* Ocupa el espacio disponible */
+  text-align: center; /* Centra el título */
+}
+/*
+========================================
+  Media Queries para Responsividad
+========================================
+*/
+
+/* Para pantallas de 768px o menos (tablets y móviles) */
+@media (max-width: 768px) {
+  .pgina-principal .top-bar {
+    flex-direction: column; /* Apilamos logo y textos verticalmente */
+    height: auto; /* La altura se ajustará al contenido */
+    min-height: 0;
+    padding: 15px 2%; /* Ajustamos el padding */
+    text-align: center; /* Centramos los textos */
+  }
+
+  .pgina-principal .ceat-logo {
+    margin-bottom: 10px; /* Espacio debajo del logo */
+  }
+
+  .pgina-principal .text-wrapper-16,
+  .pgina-principal .text-wrapper-15 {
+    margin-left: 0; /* Eliminamos los márgenes laterales */
+    white-space: normal; /* Permitimos que el texto se divida */
+  }
+
+  .pgina-principal .noticias-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+  }
+
+  .pgina-principal .footer-row,
+  .pgina-principal .RRSS {
+    justify-content: center; /* Centramos el contenido del footer */
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* Para pantallas de 480px o menos (móviles) */
+@media (max-width: 480px) {
+  .pgina-principal .noticias-grid {
+    grid-template-columns: 1fr; /* 1 columna en móviles */
+  }
+}
