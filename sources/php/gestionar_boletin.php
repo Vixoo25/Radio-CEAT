@@ -8,7 +8,7 @@ $response = ['success' => false, 'message' => 'Acción no válida.'];
 // 1. Ruta del servidor (absoluta) para que PHP pueda leer/escribir archivos.
 $boletinServerDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'boletin' . DIRECTORY_SEPARATOR;
 // 2. Ruta web (relativa) para que el navegador pueda encontrar el archivo.
-$boletinWebDir = 'Conecctions/boletin/';
+$boletinWebDir = 'sources/boletin/';
 
 // Asegurarse de que el directorio exista
 if (!is_dir($boletinServerDir)) {

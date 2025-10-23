@@ -1,0 +1,123 @@
+/*
+========================================
+  Barra Inferior (Footer / Bottom Bar)
+========================================
+*/
+
+.pgina-principal .bottom-bar {
+  /* 1. Hacemos la barra principal responsive */
+  width: 100%;
+  background-color: #550000;
+  border-top: 1px solid #696969;
+  padding: 40px 0; /* Aumentamos el espacio vertical */
+  margin-top: 50px; /* Espacio sobre el footer */
+  display: flex;
+  justify-content: center;
+}
+
+.pgina-principal .footer-content {
+  /* 2. Contenedor del contenido para centrarlo */
+  width: 90%;
+  max-width: 1130px; /* Ancho máximo igual a las otras secciones */
+  display: flex;
+  flex-direction: column; /* Apilamos las filas verticalmente */
+  align-items: center;
+  gap: 25px; /* Espacio entre las filas y las líneas */
+}
+
+.pgina-principal .footer-row {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Espacio entre contacto y redes sociales */
+  align-items: center;
+  gap: 20px;
+}
+
+.pgina-principal .sugerencias-correo {
+  font-family: "Impact-Regular", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 12px; /* Reducido */
+  letter-spacing: 2px; 
+  line-height: 1.5;
+  text-align: right;
+}
+
+.pgina-principal .contactanos {
+  /* 3. Estilos de la sección de contacto */
+  font-family: "Impact-Regular", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 12px; /* Reducido */
+  letter-spacing: 2px;
+  line-height: 1.5; /* Mejora la legibilidad */
+  text-align: left; 
+}
+
+.pgina-principal .rectangle {
+  /* Ya no es necesario, el fondo está en .bottom-bar */
+  display: none;
+}
+
+.pgina-principal .RRSS {
+  /* 4. Contenedor de las redes sociales */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Alinea el texto y los iconos a la derecha */ 
+  gap: 10px;
+}
+
+.pgina-principal .div {
+  /* "Síguenos en nuestras redes sociales" */
+  font-family: "Impact-Regular", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 12px; /* Reducido */
+  text-align: right;
+  letter-spacing: 2px;
+  line-height: normal;
+}
+
+.pgina-principal .social-icons {
+  display: flex;
+  gap: 10px; /* Espacio entre iconos */
+}
+
+.pgina-principal .RRSS img {
+  /* Estilo general para todos los iconos */
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+  /* Añadimos una transición para animar los cambios */
+  transition: transform 0.3s ease;
+}
+
+.pgina-principal .line {
+  /* 5. Línea decorativa */
+  width: 100%; /* Ocupa todo el ancho del contenedor .footer-content */
+  height: 2px;
+  background-color: #ffffff80; /* Color blanco con 50% de opacidad */
+}
+
+.pgina-principal .text-wrapper {
+  /* 6. Texto de Copyright */
+  width: 100%; /* Ocupa todo el ancho */
+  font-family: "Impact-Regular", Helvetica;
+  font-weight: 400;
+  color: #ffffffcc;
+  font-size: 14px; /* Reducido */
+  text-align: center;
+  letter-spacing: 1.5px;
+  line-height: normal;
+}
+
+/* Eliminamos las reglas de posición absoluta para cada icono */
+.pgina-principal .image,
+.pgina-principal .flickr,
+.pgina-principal .youtube,
+.pgina-principal .twitter,
+.pgina-principal .instagram,
+.pgina-principal .facebook {
+  position: static;
+}

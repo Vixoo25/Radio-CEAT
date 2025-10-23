@@ -1,0 +1,34 @@
+/* --- Importaciones de Módulos CSS --- */
+@import url("header.css");
+@import url("player.css");
+@import url("schedule.css");
+@import url("news.css");
+@import url("messages.css");
+@import url("footer.css");
+@import url("modals.css");
+@import url("animations.css");
+@import url("responsive.css");
+
+/* Establecemos un tamaño de fuente base más pequeño para escalar toda la UI */
+html {
+  font-size: 14px; /* 1rem = 14px en lugar de 16px */
+}
+
+/* --- Estilos Generales de la Página --- */
+
+.pgina-principal {
+  background-color: #ffffff;
+  width: 100%;
+  overflow-x: hidden; /* Evita el desbordamiento horizontal */
+
+  /* 1. Convertimos la página en un contenedor flexible */
+  display: flex;
+  flex-direction: column; /* Apilamos las secciones verticalmente */
+  align-items: center; /* Centramos las secciones horizontalmente */
+  gap: 50px; /* Espacio entre cada sección */
+  /* 
+    El padding-top se calculará con JS para ajustarse a la altura real de la barra.
+    Usamos una variable CSS para que JS pueda actualizarla fácilmente.
+  */
+  padding-top: var(--top-bar-height, 200px); /* Valor inicial de 200px como fallback */
+}

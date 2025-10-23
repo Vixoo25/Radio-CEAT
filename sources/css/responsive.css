@@ -1,0 +1,80 @@
+/*
+========================================
+  Media Queries para Responsividad
+========================================
+*/
+
+/* Para pantallas de 992px o menos (tablets grandes y pequeñas) */
+@media (max-width: 992px) {
+  .pgina-principal .seccin-reproductor,
+  .pgina-principal .seccin-programacin,
+  .pgina-principal .noticias,
+  .pgina-principal .seccin-mensajes {
+    width: 90%; /* Aumentamos el ancho para aprovechar mejor el espacio */
+  }
+
+  .pgina-principal .noticias-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas en tablets */
+  }
+
+  .editor-noticias-content,
+  .add-cronograma-modal .time-inputs-container {
+    flex-direction: column; /* Apilamos las columnas en los modales */
+  }
+
+  .add-cronograma-modal {
+    min-width: unset; /* Quitamos el ancho mínimo en pantallas pequeñas */
+    width: 90vw;
+  }
+}
+
+/* Para pantallas de 768px o menos (tablets en vertical y móviles grandes) */
+@media (max-width: 768px) {
+  .pgina-principal .top-bar {
+    flex-direction: column; /* Apilamos logo y textos verticalmente */
+    height: auto; /* La altura se ajustará al contenido */
+    min-height: 0;
+    padding: 15px 2%; /* Ajustamos el padding */
+    text-align: center; /* Centramos los textos */
+  }
+
+  .pgina-principal .ceat-logo {
+    margin-bottom: 10px; /* Espacio debajo del logo */
+  }
+
+  .pgina-principal .text-wrapper-16,
+  .pgina-principal .text-wrapper-15 {
+    margin-left: 0; /* Eliminamos los márgenes laterales */
+    white-space: normal; /* Permitimos que el texto se divida */
+  }
+
+  .pgina-principal .noticias-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+  }
+
+  .pgina-principal .footer-row,
+  .pgina-principal .RRSS {
+    justify-content: center; /* Centramos el contenido del footer */
+    align-items: center;
+    text-align: center;
+  }
+
+  .form-mensaje .form-row {
+    flex-direction: column; /* Apilamos los inputs de nombre y correo */
+  }
+}
+
+/* Para pantallas de 480px o menos (móviles) */
+@media (max-width: 480px) {
+  .pgina-principal .noticias-grid {
+    grid-template-columns: 1fr; /* 1 columna en móviles */
+  }
+
+  .programacion-semanal-modal .dia {
+    min-width: 120px; /* Hacemos los botones de día un poco más pequeños */
+  }
+
+  .action-buttons {
+    flex-direction: column; /* Apilamos los botones de acción en el editor */
+  }
+}

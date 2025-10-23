@@ -1,0 +1,692 @@
+/* Estilos para la ventana modal */
+.modal {
+  display: none; /* Oculto por defecto */
+  position: fixed; /* Cubre toda la pantalla */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+  z-index: 1000; /* Asegura que esté por encima de todo */
+  overflow: auto; /* Añade scroll si el contenido es muy largo */
+  /* Estilos para centrar el contenido del modal (el .modal-content) */
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  position: relative;
+  background-color: #ffffff;
+  margin: 0; /* Eliminamos el margen que causaba el movimiento */
+  border: 5px solid #791214;
+  width: 90%; /* Ancho base para móviles */
+  max-width: 1184px; /* Ancho máximo del diseño original */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  border-radius: 10px;
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+  padding: 20px;
+  min-height: 500px; /* Aumentamos la altura vertical */
+  display: flex; /* Usamos flex para organizar el contenido interno */
+  flex-direction: column;
+}
+
+/* Animación para que aparezca desde arriba */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0}
+  to {top: 0; opacity: 1}
+}
+
+/* Nueva animación para que desaparezca hacia arriba */
+@keyframes animatebottom {
+  from {top: 0; opacity: 1}
+  to {top: -300px; opacity: 0}
+}
+
+/* --- Estilos para el contenido de la Programación Semanal (dentro del Modal) --- */
+
+.programacion-semanal-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 37px;
+}
+/* 1. Estilos para el título */
+.programacion-semanal-modal .titulo-semanal {
+  font-family: "Inter-Black", Helvetica;
+  font-weight: 900;
+  color: #000000;
+  font-size: 28px; /* Reducido */
+  text-align: center;
+  letter-spacing: 2.8px;
+  margin-bottom: 20px; /* Espacio debajo del título */
+}
+
+/* 2. Estilos para la fila de días */
+.programacion-semanal-modal .dias-semana {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* Espacio uniforme entre cada botón */
+}
+
+.programacion-semanal-modal .dia {
+  flex: 1; /* Permite que los botones crezcan y ocupen el espacio */
+  min-width: 150px; /* Ancho mínimo para cada día */
+  min-height: 60px; /* Usamos min-height para que pueda crecer si es necesario */
+  background-color: #ffc1c1;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column; /* Apilamos el día y la fecha verticalmente */
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px; /* Ajustamos el padding */
+  font-family: "Inter-BoldItalic", Helvetica;
+  font-weight: 700;
+  font-style: italic;
+  color: #000000;
+  font-size: 20px; /* Reducido */
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.2; /* Mejoramos el espaciado vertical */
+  /* Añadimos una transición para animar los cambios */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.programacion-semanal-modal .dia-fecha {
+  font-size: 12px; /* Tamaño más pequeño */
+  font-style: normal; /* Le quitamos la cursiva */
+  font-weight: 500; /* Un poco menos grueso que el día */
+  opacity: 0.7; /* Hacemos el texto más transparente */
+}
+
+/* Estilo para el día activo/seleccionado */
+.programacion-semanal-modal .dia.active {
+  background-color: #ed6464; /* Un color más oscuro para indicar selección */
+  color: #ffffff;
+  transform: scale(1.05); /* Un pequeño efecto de zoom */
+}
+
+/* 3. Estilos para el contenedor de la programación */
+.programacion-semanal-modal .contenido-dia-semanal {
+  width: 100%;
+  background-color: transparent; /* Eliminamos el fondo gris */
+  padding: 0; /* Eliminamos el padding */
+  box-sizing: border-box; /* Asegura que el padding no aumente el ancho */
+  
+  /* Añadimos flex para organizar los items de programación */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre cada programa */
+
+  /* Altura mínima y scroll */
+  min-height: 130px; /* Altura para ~2 items (50px cada uno + 10px de gap + padding) */
+  max-height: 400px; /* Altura máxima antes de que aparezca el scroll */
+  overflow-y: auto; /* Habilita el scroll vertical si el contenido se desborda */
+}
+
+/* Estilo para el mensaje de "sin programación" */
+.programacion-semanal-modal .no-programacion {
+  font-family: "Inter-BoldItalic", Helvetica;
+  font-size: 16px;
+  color: #e0e0e0;
+  text-align: center;
+  margin: auto; /* Centra el mensaje vertical y horizontalmente */
+}
+
+/* --- Estilos para cada item de programa en el modal --- */
+
+.programacion-semanal-modal .programa-item {
+  width: 100%;
+  min-height: 50px; /* Altura mínima */
+  background-color: #d9d9d9;
+  border-radius: 10px;
+  transition: filter 0.3s ease; /* Añadimos transición para el hover */
+  display: flex;
+  align-items: center;
+  padding: 5px 10px; /* Padding interno */
+  gap: 15px;
+  box-sizing: border-box;
+}
+
+.programacion-semanal-modal .programa-hora {
+  background-color: #ed6464;
+  border-radius: 25px;
+  padding: 5px 15px;
+  font-family: "Inter-BlackItalic", Helvetica;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffffe6;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.programacion-semanal-modal .programa-nombre {
+  font-family: "Inter-Black", Helvetica;
+  font-weight: 900;
+  color: #000000;
+  font-size: 18px; /* Un poco más pequeño para el modal */
+}
+
+/* Eliminamos las posiciones absolutas del diseño original */
+.programacion-semanal-modal * {
+  position: static;
+  margin: 0;
+  width: auto;
+  height: auto;
+  top: auto;
+  left: auto;
+}
+
+/* --- Estilos para el Modal de Login --- */
+
+.login-modal {
+  max-width: 500px; /* Hacemos el modal más pequeño */
+  min-height: auto; /* La altura será automática */
+  margin: 0; /* Eliminamos el margen para que el centrado flex funcione */
+  padding: 40px;
+}
+
+.login-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-modal .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-modal label {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  color: #333;
+}
+
+.login-modal input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.login-modal .login-button {
+  padding: 15px;
+  background-color: #791214;
+  color: white;
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  /* Añadimos transición para el hover */
+  transition: transform 0.3s ease, filter 0.3s ease;
+  margin-top: 10px;
+}
+
+#login-message, #login-message-noticias {
+  text-align: center;
+  font-family: "Inter-Bold", Helvetica;
+  min-height: 20px; /* Para que no salte el layout */
+}
+
+.success-message {
+  color: green;
+}
+
+.error-message {
+  color: red;
+}
+
+/* --- Estilos para el Modal del Editor --- */
+
+.editor-modal {
+  max-width: 900px; /* Un modal más ancho para el calendario */
+  min-height: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.editor-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 32px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.selectors-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.editor-modal select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.calendar-container {
+  width: 100%;
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.calendar-header, .calendar-day {
+  text-align: center;
+  padding: 10px 5px;
+  font-family: "Inter-Bold", Helvetica;
+}
+
+.calendar-header {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.calendar-day {
+  background-color: #ffffff;
+  border-radius: 5px;
+  min-height: 80px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+  background-color: #e9e9e9;
+}
+
+.calendar-day.not-current-month {
+  background-color: transparent;
+  color: #aaa;
+  cursor: default;
+}
+
+.calendar-day.sunday {
+  color: red;
+  font-weight: bold;
+}
+
+.calendar-day.holiday {
+  color: red;
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;  
+  justify-content: space-between;
+  margin-top: auto; /* Empuja los botones al final */
+  flex-wrap: wrap; /* Para que se apilen en pantallas pequeñas */
+  gap: 10px; /* Espacio entre botones */
+}
+
+.editor-button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  cursor: pointer;
+  /* Añadimos una transición para animar los cambios */
+  transition: transform 0.3s ease, filter 0.3s ease;
+  flex-grow: 1; /* Permite que los botones crezcan */
+  min-width: 150px; /* Ancho mínimo para evitar que se aplasten */
+}
+
+.editor-button.cancel {
+  background-color: #c0392b; /* Rojo */
+}
+
+.editor-button.save {
+  background-color: #27ae60; /* Verde */
+}
+
+.editor-button.logout {
+  background-color: #555; /* Gris oscuro */
+}
+
+/* --- Estilos para el Modal de Añadir Cronograma --- */
+
+.add-cronograma-modal {
+  width: auto; /* La ventana se ajustará a su contenido */
+  min-width: 900px; /* Ancho mínimo igual al editor de calendario */
+  max-width: 90vw; /* Límite máximo para no ocupar toda la pantalla */
+  min-height: auto;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espacio entre elementos */
+}
+
+.add-cronograma-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 28px;
+  text-align: center;
+  font-weight: bold;
+  margin: 0;
+}
+
+.add-cronograma-modal .fecha-subtitulo {
+  font-family: "Inter-Italic", Helvetica;
+  font-style: italic;
+  color: #666;
+  opacity: 0.8;
+  font-size: 16px;
+  text-align: center;
+  margin-top: -10px; /* Lo acerca un poco al título */
+}
+
+.add-cronograma-modal .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-cronograma-modal label {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  color: #333;
+}
+
+.add-cronograma-modal input[type="text"],
+.add-cronograma-modal input[type="time"] {
+  /* Ya no forzamos el 100% para permitir que el modal se encoja */
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: "Inter-Regular", Helvetica;
+  /* El input crecerá con el contenedor flex */
+  flex-grow: 1;
+}
+
+.add-cronograma-modal .time-inputs-container {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.add-cronograma-modal .time-inputs-container .form-group {
+  flex: 1; /* Cada input de hora ocupa la mitad del espacio */
+}
+
+.add-cronograma-modal .cronogramas-existentes-container {
+  margin-top: 15px;
+}
+
+/* Estilo para la lista de cronogramas existentes, imitando a .pruebas-de */
+.add-cronograma-modal .lista-cronogramas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: transparent; /* Eliminamos el fondo gris */
+  padding: 0; /* Eliminamos el padding */
+  margin-top: 8px; /* Espacio desde el label */
+
+  /* Scroll si es necesario */
+  max-height: 200px; /* Altura máxima antes de que aparezca el scroll */
+  overflow-y: auto; /* Habilita el scroll vertical si el contenido se desborda */
+}
+
+.add-cronograma-modal .programa-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.add-cronograma-modal .action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px;
+  border-radius: 5px;
+  /* Añadimos transición para el hover */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.add-cronograma-modal .action-btn:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+.add-cronograma-modal .add-cronograma-actions {
+  display: flex;
+  justify-content: flex-end; /* Alinea el botón a la derecha */
+  margin-top: 10px;
+}
+
+.add-cronograma-modal textarea {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: "Inter-Regular", Helvetica;
+  resize: vertical; /* Permite redimensionar solo verticalmente */
+}
+
+/* --- Estilos para el Modal de Descripción de Cronograma --- */
+
+.descripcion-cronograma-modal {
+  max-width: 600px;
+  min-height: auto;
+  padding: 40px;
+  text-align: center;
+}
+
+.descripcion-cronograma-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.descripcion-cronograma-modal .hora-subtitulo {
+  font-family: "Inter-Italic", Helvetica;
+  font-style: italic;
+  color: #666;
+  opacity: 0.8;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.descripcion-cronograma-modal .descripcion-contenido {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 20px;
+  min-height: 100px;
+  max-height: 250px; /* Altura máxima antes de activar el scroll */
+  overflow-y: auto; /* Activa el scroll vertical solo si es necesario */
+  text-align: left;
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: break-word; /* Permite que las palabras largas se corten */
+}
+
+/* --- Estilos para el Modal del Editor de Boletín y Noticias --- */
+
+.editor-noticias-modal {
+  max-width: 900px;
+  min-height: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.editor-noticias-modal h2 {
+  font-family: "Inter-Black", Helvetica;
+  font-size: 32px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.editor-noticias-content {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+}
+
+.editor-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+}
+
+.editor-section h3 {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  font-family: "Inter-Regular", Helvetica;
+  color: #666;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: #791214;
+  background-color: #f9f2f2;
+}
+
+.file-select-link {
+  color: #791214;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.file-info {
+  text-align: center;
+  font-style: italic;
+  color: #333;
+}
+
+.current-file-container {
+  margin-top: 15px;
+}
+
+.current-file-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e9e9e9;
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+
+.drop-zone.small {
+  padding: 20px;
+  font-size: 13px;
+}
+
+/* Estilo genérico para todos los botones de cierre de modales */
+.modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  /* Añadimos transición para el hover */
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.modal-header h2 {
+  margin: 0;
+  flex-grow: 1; /* Ocupa el espacio disponible */
+  text-align: center; /* Centra el título */
+}
+
+/*
+========================================
+  Modal de Mensajes de Oyentes
+========================================
+*/
+
+.ver-mensajes-modal {
+  max-width: 800px;
+  min-height: auto;
+  max-height: 80vh; /* Altura máxima para que no ocupe toda la pantalla */
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.lista-mensajes {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto; /* Scroll si hay muchos mensajes */
+  padding-right: 10px;
+}
+
+.mensaje-item {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.mensaje-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mensaje-nombre {
+  font-family: "Inter-Bold", Helvetica;
+  font-size: 16px;
+  color: #333;
+}
+
+.mensaje-gmail {
+  font-family: "Inter-Regular", Helvetica;
+  font-size: 13px;
+  color: #666;
+}
+
+.mensaje-actions {
+  display: flex;
+  gap: 10px;
+}
+
+#mensaje-completo-fecha {
+  margin-top: -15px; /* Lo acerca un poco al email */
+  font-size: 14px; /* Un poco más pequeño */
+}

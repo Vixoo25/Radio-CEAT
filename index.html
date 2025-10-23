@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="Conecctions/globals.css" />
-    <link rel="stylesheet" href="Conecctions/style.css" />
-    <script src="Conecctions/script.js" defer></script>
+    <title>Radio Escolar CEAT</title>
+    <link rel="stylesheet" href="sources/css/globals.css" />
+    <link rel="stylesheet" href="sources/css/style.css" />
+    <!-- Los scripts ahora son de tipo "module" para permitir importaciones -->
+    <script src="sources/js/main.js" type="module" defer></script>
   </head>
   <body>
     <div class="pgina-principal">
       <!-- 2. Añadimos el reproductor de audio invisible -->
-      <audio id="audio-player" src="https://sonic-us.arkeo.cl/8516/stream"></audio>
+      <audio
+        id="audio-player"
+        src="https://sonic-us.arkeo.cl/8516/stream"
+        preload="none"
+      ></audio>
 
       <div class="top-bar">
-        <a href="https://ceat.cl" target="_blank" rel="noopener noreferrer">
-          <img class="ceat-logo" src="./Conecctions/assets/LogoCeat.png" />
-        </a>
+        <a href="https://ceat.cl" target="_blank" rel="noopener noreferrer"
+          ><img class="ceat-logo" src="./sources/assets/LogoCeat.png"
+        /></a>
         <div class="text-wrapper-16">Radio Escolar CEAT</div>
         <div class="text-wrapper-15">Conectando la comunidad educativa</div>
       </div>
@@ -39,36 +45,65 @@
               </div>
               <div class="seccin-volumen">
                 <div class="text-wrapper-9">Volumen</div>
-                <input type="range" id="volume-slider" class="rectangle-9" min="0" max="100" value="100" />
+                <input
+                  type="range"
+                  id="volume-slider"
+                  class="rectangle-9"
+                  min="0"
+                  max="100"
+                  value="100"
+                />
               </div>
             </div>
             <div class="estado-de">
               <span class="text-wrapper-8">Estado:</span>
               <span id="status-paused" class="pausado">⏸️ Pausado</span>
-              <span id="status-playing" class="text-wrapper-7">🟢 Reproduciendo</span>
+              <span id="status-playing" class="text-wrapper-7"
+                >🟢 Reproduciendo</span
+              >
             </div>
             <!-- Enlace de fallback movido aquí -->
             <p class="en-caso-de-no">
               En caso de no escucharse, abra directamente
-              <a href="https://sonic-us.arkeo.cl/8516/stream" target="_blank" rel="noopener noreferrer" class="fallback-link">este enlace</a>.
+              <a
+                href="https://sonic-us.arkeo.cl/8516/stream"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="fallback-link"
+                >este enlace</a
+              >.
             </p>
           </div>
           <!-- Columna Derecha: Spotify -->
           <div class="columna-spotify">
             <!-- Item 1: Podcast -->
             <div class="spotify-item">
-              <a href="https://open.spotify.com/show/0A9TSHjbKjdH4MVrMz5S3Y?si=5fcfaa6bd55848d6" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://open.spotify.com/show/0A9TSHjbKjdH4MVrMz5S3Y?si=5fcfaa6bd55848d6"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <div class="circular-button">
-                  <img src="./Conecctions/assets/CeatPodcast.png" alt="Ir al Podcast de CEAT">
+                  <img
+                    src="./sources/assets/CeatPodcast.png"
+                    alt="Ir al Podcast de CEAT"
+                  />
                 </div>
               </a>
               <p class="spotify-item-label">CEAT Podcast</p>
             </div>
             <!-- Item 2: Himno -->
             <div class="spotify-item">
-              <a href="https://www.youtube.com/watch?v=oua_1M2xtmk" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://www.youtube.com/watch?v=oua_1M2xtmk"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <div class="circular-button">
-                  <img src="./Conecctions/assets/Himno-del-CEAT.png" alt="Escuchar Himno del CEAT">
+                  <img
+                    src="./sources/assets/Himno-del-CEAT.png"
+                    alt="Escuchar Himno del CEAT"
+                  />
                 </div>
               </a>
               <p class="spotify-item-label">Nuestro Himno</p>
@@ -77,50 +112,47 @@
         </div>
       </div>
       <div class="seccin-programacin fade-in-section">
-        <div id="open-login-modal" class="programaci-n-diaria login-trigger">Programación diaria&nbsp;&nbsp;(<span id="current-date"></span>)</div>
+        <div id="open-login-modal" class="programaci-n-diaria login-trigger">
+          Programación diaria&nbsp;&nbsp;(<span id="current-date"></span>)
+        </div>
         <div class="pruebas-de">
           <!-- La programación diaria se generará con JavaScript -->
         </div>
         <button id="open-modal-programacion" class="botn-programacin">
           <div class="rectangle-5"></div>
-          <p class="text-wrapper-3">Haz click para ver la programación semanal.</p>
+          <p class="text-wrapper-3">
+            Haz click para ver la programación semanal.
+          </p>
         </button>
-        <div id="modal-programacion" class="modal">
-          <div class="modal-content programacion-semanal-modal">
-            <!-- 1. Título centrado -->
-            <div class="titulo-semanal">Programación Semanal</div>
-
-            <!-- 2. Fila con los días de la semana -->
-            <div class="dias-semana">
-              <div class="dia" data-dia="Lunes">Lunes <span class="dia-fecha"></span></div>
-              <div class="dia" data-dia="Martes">Martes <span class="dia-fecha"></span></div>
-              <div class="dia" data-dia="Miércoles">Miércoles <span class="dia-fecha"></span></div>
-              <div class="dia" data-dia="Jueves">Jueves <span class="dia-fecha"></span></div>
-              <div class="dia" data-dia="Viernes">Viernes <span class="dia-fecha"></span></div>
-            </div>
-
-            <!-- 3. Contenedor para la programación (con scroll) -->
-            <div class="contenido-dia-semanal">
-              <!-- El contenido se generará con JavaScript -->
-            </div>
-          </div>
-        </div>
       </div>
       <div class="noticias fade-in-section">
         <!-- Título principal de la sección -->
-        <div id="open-login-noticias-modal" class="text-wrapper-2 login-trigger">Noticias / Blogs</div>
+        <div id="open-login-noticias-modal" class="text-wrapper-2 login-trigger">
+          Noticias / Blogs
+        </div>
 
         <!-- Contenedor para las dos columnas -->
         <div class="noticias-content">
           <!-- Columna Izquierda: Boletín -->
           <div class="zona-boletn">
-            <div class="boletin">Boletín Semanal</div> 
-            <div id="boletin-cuerpo" class="boletin-cuerpo"> <!-- Contenedor exterior que recorta -->
-              <div class="pdf-wrapper"> <!-- Contenedor interior que centra el iframe -->
-                <iframe id="boletin-pdf-viewer" src="" style="border: none;"></iframe>
+            <div class="boletin">Boletín Semanal</div>
+            <div id="boletin-cuerpo" class="boletin-cuerpo">
+              <!-- Contenedor exterior que recorta -->
+              <div class="pdf-wrapper">
+                <!-- Contenedor interior que centra el iframe -->
+                <iframe id="boletin-pdf-viewer" src="" style="border: none"></iframe>
               </div>
-              <a id="boletin-overlay-link" href="#" target="_blank" rel="noopener noreferrer" class="boletin-overlay-link"></a> <!-- Enlace movido aquí -->
-              <p id="boletin-texto" class="p" style="display: none;">No hay boletín disponible.</p>
+              <a
+                id="boletin-overlay-link"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="boletin-overlay-link"
+              ></a>
+              <!-- Enlace movido aquí -->
+              <p id="boletin-texto" class="p" style="display: none">
+                No hay boletín disponible.
+              </p>
             </div>
           </div>
 
@@ -137,31 +169,75 @@
       <!-- Nueva Sección: Envío de Mensajes -->
       <div class="seccin-mensajes fade-in-section">
         <h2 class="text-wrapper-2">¡Envíanos un Mensaje!</h2>
-        <p class="subtitulo-seccion">Tus saludos, sugerencias o comentarios son bienvenidos.</p>
-        
+        <p class="subtitulo-seccion">
+          Tus saludos, sugerencias o comentarios son bienvenidos.
+        </p>
+
         <form id="form-mensaje-oyente" class="form-mensaje">
           <div class="form-row">
             <div class="input-group-mensaje">
               <label for="mensaje-gmail">Tu Correo Electrónico</label>
-              <input type="email" id="mensaje-gmail" name="gmail" placeholder="ejemplo@correo.com" required>
+              <input
+                type="email"
+                id="mensaje-gmail"
+                name="gmail"
+                placeholder="ejemplo@correo.com"
+                required
+              />
             </div>
             <div class="input-group-mensaje">
               <label for="mensaje-nombre">Tu Nombre</label>
-              <input type="text" id="mensaje-nombre" name="nombre" placeholder="Tu nombre o apodo" required>
+              <input
+                type="text"
+                id="mensaje-nombre"
+                name="nombre"
+                placeholder="Tu nombre o apodo"
+                required
+              />
             </div>
           </div>
-          
+
           <div class="input-group-mensaje">
             <div class="mensaje-header">
               <label for="mensaje-texto">Mensaje</label>
               <span id="char-counter" class="char-counter">0/300</span>
             </div>
-            <textarea id="mensaje-texto" name="mensaje" rows="5" maxlength="300" placeholder="Escribe tu mensaje aquí..." required></textarea>
+            <textarea
+              id="mensaje-texto"
+              name="mensaje"
+              rows="5"
+              maxlength="300"
+              placeholder="Escribe tu mensaje aquí..."
+              required
+            ></textarea>
           </div>
-          
+
           <button type="submit" class="editor-button save">Enviar Mensaje</button>
           <p id="mensaje-oyente-status"></p>
         </form>
+      </div>
+
+      <!-- MODAL DE PROGRAMACIÓN SEMANAL (MOVIDO AQUÍ) -->
+      <div id="modal-programacion" class="modal">
+        <div class="modal-content programacion-semanal-modal">
+          <span class="close-button">&times;</span>
+          <!-- 1. Título centrado -->
+          <div class="titulo-semanal">Programación Semanal</div>
+
+          <!-- 2. Fila con los días de la semana -->
+          <div class="dias-semana">
+            <div class="dia" data-dia="Lunes">Lunes <span class="dia-fecha"></span></div>
+            <div class="dia" data-dia="Martes">Martes <span class="dia-fecha"></span></div>
+            <div class="dia" data-dia="Miércoles">Miércoles <span class="dia-fecha"></span></div>
+            <div class="dia" data-dia="Jueves">Jueves <span class="dia-fecha"></span></div>
+            <div class="dia" data-dia="Viernes">Viernes <span class="dia-fecha"></span></div>
+          </div>
+
+          <!-- 3. Contenedor para la programación (con scroll) -->
+          <div class="contenido-dia-semanal">
+            <!-- El contenido se generará con JavaScript -->
+          </div>
+        </div>
       </div>
 
       <!-- Ventana Modal para Iniciar Sesión -->
@@ -172,11 +248,11 @@
           <form id="login-form">
             <div class="input-group">
               <label for="username">Usuario</label>
-              <input type="text" id="username" name="username" required>
+              <input type="text" id="username" name="username" required />
             </div>
             <div class="input-group">
               <label for="password">Contraseña</label>
-              <input type="password" id="password" name="password" required>
+              <input type="password" id="password" name="password" required />
             </div>
             <p id="login-message"></p>
             <button type="submit" class="login-button">Ingresar</button>
@@ -192,11 +268,21 @@
           <form id="login-form-noticias">
             <div class="input-group">
               <label for="username-noticias">Usuario</label>
-              <input type="text" id="username-noticias" name="username-noticias" required>
+              <input
+                type="text"
+                id="username-noticias"
+                name="username-noticias"
+                required
+              />
             </div>
             <div class="input-group">
               <label for="password-noticias">Contraseña</label>
-              <input type="password" id="password-noticias" name="password-noticias" required>
+              <input
+                type="password"
+                id="password-noticias"
+                name="password-noticias"
+                required
+              />
             </div>
             <p id="login-message-noticias"></p>
             <button type="submit" class="login-button">Ingresar</button>
@@ -208,7 +294,7 @@
       <div id="modal-editor-noticias" class="modal">
         <div class="modal-content editor-noticias-modal">
           <div class="modal-header">
-            <h2>Editar Boletín y Noticias</h2>            
+            <h2>Editar Boletín y Noticias</h2>
             <span class="close-button">&times;</span>
           </div>
 
@@ -216,53 +302,104 @@
             <!-- Sección Izquierda: Boletín -->
             <div class="editor-section boletin-editor">
               <h3>Boletín Semanal (.pdf)</h3>
-              
+
               <!-- Zona para subir archivo -->
               <div id="drop-zone-boletin" class="drop-zone">
-                Arrastra un archivo .pdf aquí o <span class="file-select-link">selecciona uno</span>
-                <input type="file" id="file-input-boletin" accept=".pdf" style="display: none;">
+                Arrastra un archivo .pdf aquí o
+                <span class="file-select-link">selecciona uno</span>
+                <input
+                  type="file"
+                  id="file-input-boletin"
+                  accept=".pdf"
+                  style="display: none"
+                />
               </div>
               <p id="file-info-boletin" class="file-info"></p>
 
               <!-- Zona para mostrar y eliminar archivo existente -->
-              <div id="current-boletin-container" class="current-file-container" style="display: none;">
+              <div
+                id="current-boletin-container"
+                class="current-file-container"
+                style="display: none"
+              >
                 <label>Boletín Actual:</label>
                 <div id="current-boletin-info" class="current-file-info"></div>
               </div>
 
-              <button id="save-boletin-button" class="editor-button save" disabled>Guardar Boletín</button>
+              <button id="save-boletin-button" class="editor-button save" disabled>
+                Guardar Boletín
+              </button>
               <!-- Botón de cerrar sesión movido aquí -->
-              <button id="logout-noticias-button" class="editor-button logout">Cerrar Sesión</button>
+              <button id="logout-noticias-button" class="editor-button logout">
+                Cerrar Sesión
+              </button>
             </div>
 
             <!-- Sección Derecha: Noticias -->
             <div class="editor-section noticias-editor">
               <h3>Noticias de Interés</h3>
-              
+
               <!-- Formulario para añadir/editar noticia -->
-              <div id="form-noticia" class="form-group">
-                <input type="hidden" id="noticia-id">
-                <input type="text" id="noticia-titulo" placeholder="Título de la noticia" required>
-                <input type="date" id="noticia-fecha" required>
-                <input type="url" id="noticia-url" placeholder="URL de la noticia completa" required>
-                
+              <form id="form-noticia" class="form-group">
+                <input type="hidden" id="noticia-id" />
+                <input
+                  type="text"
+                  id="noticia-titulo"
+                  placeholder="Título de la noticia"
+                  required
+                />
+                <input type="date" id="noticia-fecha" required />
+                <input
+                  type="url"
+                  id="noticia-url"
+                  placeholder="URL de la noticia completa"
+                  required
+                />
+
                 <div id="drop-zone-noticia" class="drop-zone small">
-                  Arrastra una imagen (.png, .jpeg) o <span class="file-select-link">selecciona una</span>
-                  <input type="file" id="file-input-noticia" accept="image/png, image/jpeg" style="display: none;">
+                  Arrastra una imagen (.png, .jpeg) o
+                  <span class="file-select-link">selecciona una</span>
+                  <input
+                    type="file"
+                    id="file-input-noticia"
+                    accept="image/png, image/jpeg"
+                    style="display: none"
+                  />
                 </div>
                 <p id="file-info-noticia" class="file-info"></p>
-                <img id="noticia-preview" src="" alt="Previsualización de imagen" style="display: none; max-width: 100%; border-radius: 8px; margin-top: 10px;">
+                <img
+                  id="noticia-preview"
+                  src=""
+                  alt="Previsualización de imagen"
+                  style="
+                    display: none;
+                    max-width: 100%;
+                    border-radius: 8px;
+                    margin-top: 10px;
+                  "
+                />
 
                 <div class="add-cronograma-actions">
-                  <button id="cancel-edit-noticia-button" class="editor-button cancel" style="display: none;">Cancelar Edición</button>
-                  <button id="save-noticia-button" class="editor-button save">Guardar Noticia</button>
+                  <button
+                    id="cancel-edit-noticia-button"
+                    class="editor-button cancel"
+                    style="display: none"
+                  >
+                    Cancelar Edición
+                  </button>
+                  <button type="button" id="save-noticia-button" class="editor-button save">
+                    Guardar Noticia
+                  </button>
                 </div>
-              </div>
+              </form>
 
               <!-- Lista de noticias existentes -->
               <div class="cronogramas-existentes-container">
                 <label>Noticias Publicadas:</label>
-                <div id="lista-noticias-existentes" class="lista-cronogramas"></div>
+                <div
+                  id="lista-noticias-existentes"
+                  class="lista-cronogramas"
+                ></div>
               </div>
             </div>
           </div>
@@ -274,7 +411,7 @@
         <div class="modal-content editor-modal">
           <div class="modal-header">
             <!-- 1. Título -->
-            <h2>Editar Cronogramas</h2>            
+            <h2>Editar Cronogramas</h2>
           </div>
 
           <!-- 2 & 3. Selectores de Año y Mes -->
@@ -294,10 +431,19 @@
 
           <!-- 5. Botones de Acción -->
           <div class="action-buttons">
-            <button id="editor-cancel-button" class="editor-button cancel">Descartar cambios y salir</button>
-            <button id="logout-cronograma-button" class="editor-button logout">Cerrar Sesión</button>
-            <button id="ver-mensajes-button" class="editor-button logout">Ver Mensajes</button> <!-- Botón movido aquí -->
-            <button id="editor-save-button" class="editor-button save">Guardar Cambios</button>
+            <button id="editor-cancel-button" class="editor-button cancel">
+              Descartar cambios y salir
+            </button>
+            <button id="logout-cronograma-button" class="editor-button logout">
+              Cerrar Sesión
+            </button>
+            <button id="ver-mensajes-button" class="editor-button logout">
+              Ver Mensajes
+            </button>
+            <!-- Botón movido aquí -->
+            <button id="editor-save-button" class="editor-button save">
+              Guardar Cambios
+            </button>
           </div>
         </div>
       </div>
@@ -315,37 +461,61 @@
           <!-- 4. Input para el nombre -->
           <div class="form-group">
             <label for="cronograma-nombre">Nombre del Cronograma:</label>
-            <input type="text" id="cronograma-nombre" name="cronograma-nombre">
+            <input type="text" id="cronograma-nombre" name="cronograma-nombre" />
           </div>
 
           <!-- 5. Inputs para la hora -->
           <div class="time-inputs-container">
             <div class="form-group">
               <label for="cronograma-inicio">Hora de Inicio:</label>
-              <input type="time" id="cronograma-inicio" name="cronograma-inicio" required>
+              <input
+                type="time"
+                id="cronograma-inicio"
+                name="cronograma-inicio"
+                required
+              />
             </div>
             <div class="form-group">
               <label for="cronograma-fin">Hora de Termino:</label>
-              <input type="time" id="cronograma-fin" name="cronograma-fin" required>
+              <input
+                type="time"
+                id="cronograma-fin"
+                name="cronograma-fin"
+                required
+              />
             </div>
           </div>
 
           <!-- Nuevo campo para la descripción -->
           <div class="form-group">
-            <label for="cronograma-descripcion">Descripción (opcional):</label>
-            <textarea id="cronograma-descripcion" name="cronograma-descripcion" rows="4" maxlength="200" placeholder="Breve descripción del programa..."></textarea>
+            <div class="mensaje-header">
+              <label for="cronograma-descripcion">Descripción (opcional):</label>
+              <span id="cronograma-char-counter" class="char-counter">0/500</span>
+            </div>
+            <textarea
+              id="cronograma-descripcion"
+              name="cronograma-descripcion"
+              rows="4"
+              maxlength="500"
+              placeholder="Breve descripción del programa..."
+            ></textarea>
           </div>
 
           <!-- 6. Sección de Cronogramas Existentes -->
           <div class="cronogramas-existentes-container">
             <label>Cronogramas Existentes:</label>
             <!-- Este contenedor se llenará con JavaScript -->
-            <div id="lista-cronogramas-existentes" class="lista-cronogramas"></div>
+            <div
+              id="lista-cronogramas-existentes"
+              class="lista-cronogramas"
+            ></div>
           </div>
 
           <!-- Botón de Guardar -->
           <div class="add-cronograma-actions">
-            <button id="save-cronograma-button" class="editor-button save">Guardar</button>
+            <button id="save-cronograma-button" class="editor-button save">
+              Guardar
+            </button>
           </div>
         </div>
       </div>
@@ -371,7 +541,7 @@
         <div class="modal-content ver-mensajes-modal">
           <span class="close-button">&times;</span>
           <h2 class="titulo-semanal">Mensajes Recibidos</h2>
-          
+
           <div id="lista-mensajes-oyentes" class="lista-mensajes">
             <!-- Los mensajes se cargarán aquí con JavaScript -->
           </div>
@@ -384,7 +554,8 @@
           <span class="close-button">&times;</span>
           <h2 id="mensaje-completo-nombre"></h2>
           <p id="mensaje-completo-gmail" class="hora-subtitulo"></p>
-          <p id="mensaje-completo-fecha" class="hora-subtitulo"></p> <!-- Nuevo elemento para la fecha -->
+          <p id="mensaje-completo-fecha" class="hora-subtitulo"></p>
+          <!-- Nuevo elemento para la fecha -->
           <div class="descripcion-contenido">
             <p id="mensaje-completo-texto"></p>
           </div>
@@ -396,44 +567,78 @@
         <div class="footer-content">
           <!-- Nueva Fila de Sugerencias -->
           <div class="footer-row sugerencias-row">
-            <p class="contactanos">¿Tienes sugerencias para la página? Háznolas saber al correo:</p>
-            <p class="sugerencias-correo">radio@ceat.cl</p>
+            <p class="contactanos">
+              ¿Tienes sugerencias para la página? Háznolas saber al correo:
+            </p>
+            <a href="mailto:radio@ceat.cl" class="sugerencias-correo">radio@ceat.cl</a>
           </div>
           <div class="line"></div>
 
           <!-- Fila de Contacto y RRSS -->
           <div class="footer-row">
             <p class="contactanos">
-              CONTÁCTANOS<br /><br />Tel (+56 41 ) 2374904<br />Los Acacios 1755, San Pedro de la Paz
+              CONTÁCTANOS<br /><br />Tel (+56 41 ) 2374904<br />Los Acacios
+              1755, San Pedro de la Paz
             </p>
             <div class="RRSS">
               <p class="div">Síguenos en nuestras redes sociales</p>
               <div class="social-icons">
-              <a href="https://www.facebook.com/CorporacionCEAT/" target="_blank" rel="noopener noreferrer">
-                <img class="facebook" src="./Conecctions/assets/LogoFB.png" />
-              </a>
-              <a href="https://www.instagram.com/ceat_liceomh/" target="_blank" rel="noopener noreferrer">
-                <img class="instagram" src="./Conecctions/assets/LogoIG.png" />
-              </a>
-              <a href="https://x.com/CorporacionCEAT" target="_blank" rel="noopener noreferrer">
-                <img class="twitter" src="./Conecctions/assets/LogoTWT.png" />
-              </a>
-              <a href="https://www.youtube.com/@CorporacionCEAT/videos" target="_blank" rel="noopener noreferrer">
-                <img class="youtube" src="./Conecctions/assets/LogoYT.png" />
-              </a>
-              <a href="https://www.flickr.com/photos/corporacionceat/albums/" target="_blank" rel="noopener noreferrer">
-                <img class="flickr" src="./Conecctions/assets/LogoFlickr.png" />
-              </a>
-              <a href="https://creators.spotify.com/pod/profile/ceat-podcast/" target="_blank" rel="noopener noreferrer">
-                <img class="image" src="./Conecctions/assets/LogoRSS.png" />
-              </a>
+                <a
+                  href="https://www.facebook.com/CorporacionCEAT/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img class="facebook" src="./sources/assets/LogoFB.png" />
+                </a>
+                <a
+                  href="https://www.instagram.com/ceat_liceomh/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img class="instagram" src="./sources/assets/LogoIG.png" />
+                </a>
+                <a
+                  href="https://x.com/CorporacionCEAT"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img class="twitter" src="./sources/assets/LogoTWT.png" />
+                </a>
+                <a
+                  href="https://www.youtube.com/@CorporacionCEAT/videos"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img class="youtube" src="./sources/assets/LogoYT.png" />
+                </a>
+                <a
+                  href="https://www.flickr.com/photos/corporacionceat/albums/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img class="flickr" src="./sources/assets/LogoFlickr.png" />
+                </a>
+                <a
+                  href="https://creators.spotify.com/pod/profile/ceat-podcast/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img class="image" src="./sources/assets/LogoRSS.png" />
+                </a>
               </div>
             </div>
           </div>
 
           <div class="line"></div>
           <p class="text-wrapper">
-            © 2025 Radio Escolar CEAT — Todos los derechos reservados — <a href="https://www.ceattelecom.cl" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">Telecomunicaciones 2025</a>
+            ©&nbsp;2025&nbsp;Radio Escolar CEAT — Todos los derechos reservados —
+            <a
+              href="https://www.ceattelecom.cl"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="color: inherit; text-decoration: underline"
+              >Telecomunicaciones 2025</a
+            >
           </p>
         </div>
       </div>
