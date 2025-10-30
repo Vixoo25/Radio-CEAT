@@ -31,7 +31,8 @@
 }
 
 /* Efecto para el logo */
-.pgina-principal .ceat-logo:hover {
+.pgina-principal .ceat-logo:hover,
+.pgina-principal .radio-logo:hover {
   transform: scale(1.08); /* Crece un 8% */
 }
 

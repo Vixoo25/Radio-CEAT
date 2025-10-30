@@ -48,6 +48,11 @@
     white-space: normal; /* Permitimos que el texto se divida */
   }
 
+  .pgina-principal .header-titles {
+    margin: 0; /* Eliminamos el margen en pantallas pequeñas */
+    flex-grow: 0; /* Dejamos que el tamaño se ajuste al contenido */
+  }
+
   .pgina-principal .noticias-grid {
     grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
   }

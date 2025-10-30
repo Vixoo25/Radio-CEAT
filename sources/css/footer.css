@@ -34,6 +34,11 @@
   gap: 20px;
 }
 
+.pgina-principal .sugerencias-row {
+  justify-content: center; /* Centra los elementos */
+  align-items: center;
+}
+
 .pgina-principal .sugerencias-correo {
   font-family: "Impact-Regular", Helvetica;
   font-weight: 400;
@@ -41,7 +46,6 @@
   font-size: 12px; /* Reducido */
   letter-spacing: 2px; 
   line-height: 1.5;
-  text-align: right;
 }
 
 .pgina-principal .contactanos {
@@ -53,6 +57,11 @@
   letter-spacing: 2px;
   line-height: 1.5; /* Mejora la legibilidad */
   text-align: left; 
+}
+
+.pgina-principal .contactanos a {
+  color: inherit;
+  text-decoration: underline;
 }
 
 .pgina-principal .rectangle {

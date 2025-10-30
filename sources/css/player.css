@@ -68,8 +68,8 @@
 }
 
 .circular-button {
-  width: 120px; /* Reducimos el tamaño para que quepan ambos */
-  height: 120px; /* Reducimos el tamaño para que quepan ambos */
+  width: 80px; /* Reducimos el tamaño para que quepan ambos */
+  height: 80px; /* Reducimos el tamaño para que quepan ambos */
   background-color: #d9d9d9; /* Color de fondo gris claro */
   border: 3px solid #c0392b; /* Borde con un tono rojo */
   border-radius: 50%; /* Esto lo hace un círculo perfecto */
@@ -143,14 +143,8 @@
 }
 
 .pgina-principal .span {
-  font-family: "Inter-BlackItalic", Helvetica;
-  font-style: italic;
+  font-family: "Inter-Black", Helvetica;
   color: #ffffffe6;
-}
-
-.pgina-principal .fallback-link {
-  color: #ff6464; /* Color rojo para "este enlace" */
-  text-decoration: underline;
 }
 
 .pgina-principal .estado-de {
@@ -190,9 +184,8 @@
 .pgina-principal .text-wrapper-9 {
   /* "Volumen" */
   text-shadow: 1px 1px 4px #ffffff96;
-  font-family: "Inter-BoldItalic", Helvetica;
+  font-family: "Inter-Bold", Helvetica;
   font-weight: 700;
-  font-style: italic;
   color: #555;
   font-size: 14px;
 }
@@ -251,9 +244,8 @@
 .pgina-principal .text-wrapper-12 {
   /* "Listo para reproducir" */
   text-shadow: 1px 1px 4px #ffffff96;
-  font-family: "Inter-BoldItalic", Helvetica;
+  font-family: "Inter-Bold", Helvetica;
   font-weight: 700;
-  font-style: italic;
   color: #555;
   font-size: 14px;
   letter-spacing: 0;

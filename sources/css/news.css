@@ -43,9 +43,8 @@
 
 .pgina-principal .noticias-de-inter-s,
 .pgina-principal .boletin {
-  font-family: "Inter-BlackItalic", Helvetica;
+  font-family: "Inter-Black", Helvetica;
   font-weight: 900;
-  font-style: italic;
   color: #333;
   font-size: 22px; /* Reducido */
   text-align: center;
@@ -92,9 +91,8 @@
 }
 
 .pgina-principal .t-ejemplo {
-  font-family: "Inter-BlackItalic", Helvetica;
+  font-family: "Inter-Black", Helvetica;
   font-weight: 700;
-  font-style: italic;
   color: #333;
   font-size: 16px; /* Mantener el tamaño original */
 }
@@ -102,7 +100,6 @@
 .pgina-principal .noticia-fecha {
   font-size: 12px; /* Texto más pequeño */
   opacity: 0.7; /* Más transparente */
-  font-style: normal; /* Le quitamos la cursiva para diferenciarlo del título */
   margin-top: 4px;
 }
 
@@ -155,9 +152,8 @@
 
 .pgina-principal .p {
   position: static;
-  font-family: "Inter-BlackItalic", Helvetica;
+  font-family: "Inter-Black", Helvetica;
   font-weight: 900;
-  font-style: italic;
   color: #555555; /* Cambiamos el color para que contraste con el fondo claro */
   font-size: 18px; /* Reducido */
   text-align: center;
@@ -166,9 +162,8 @@
 .pgina-principal .text-wrapper-2 {
   /* Título principal de la sección de noticias */
   width: 100%; /* Ocupa todo el ancho */
-  font-family: "Inter-BlackItalic", Helvetica;
+  font-family: "Inter-Black", Helvetica;
   font-weight: 900;
-  font-style: italic;
   color: #333;
   font-size: 24px; /* Reducido */
   text-align: center;

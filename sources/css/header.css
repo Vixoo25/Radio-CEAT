@@ -16,7 +16,7 @@
   /* 2. Usamos Flexbox para alinear los elementos */
   display: flex;
   align-items: center;      /* Centra los elementos verticalmente */
-  justify-content: center;  /* Centra los elementos horizontalmente */ 
+  justify-content: space-between; /* Distribuye el espacio */
   padding: 0 2%; /* Añade un poco de espacio en los bordes */
   background-color: #550000; /* Aplicamos el fondo directamente aquí */
   border-bottom: 1px solid #696969; /* Mantenemos el borde inferior */
@@ -30,15 +30,36 @@
 .pgina-principal .ceat-logo {
   /* 3. Estilos para el Logo */
   /* Usamos un tamaño fijo para asegurar la visibilidad */
-  height: clamp(60px, 10vh, 80px); /* Reducido */
-  width: clamp(60px, 10vh, 80px); /* Reducido */
+  height: clamp(120px, 10vh, 80px); /* Reducido */
+  width: clamp(120px, 10vh, 80px); /* Reducido */
   object-fit: contain; 
   display: block; /* Aseguramos que se comporte como un bloque */
-  background-color: #ffffff; /* Fondo blanco para resaltar */
+  /*background-color: #ffffff;*/ /* Fondo blanco para resaltar */
   border-radius: 15%;        /* Hacemos el fondo circular */
   padding: 5px;              /* Pequeño espacio para que el logo "respire" */
   /* Añadimos transición para el hover */
   transition: transform 0.3s ease;
+}
+
+.pgina-principal .radio-logo {
+  /* Estilos para el nuevo Logo de la Radio */
+  height: clamp(120px, 10vh, 80px);
+  width: clamp(120px, 10vh, 80px);
+  object-fit: contain;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.pgina-principal .header-titles {
+  /* Contenedor para los textos */
+  display: flex;
+  flex-direction: column; /* Apila los textos verticalmente */
+  align-items: center; /* Centra los textos horizontalmente */
+  text-align: center;
+  /* Ajustamos el margen para que no esté pegado a los logos */
+  margin: 0 20px;
+  /* Flex grow para que ocupe el espacio central */
+  flex-grow: 1;
 }
 
 .pgina-principal .text-wrapper-16 {
@@ -51,17 +72,17 @@
   letter-spacing: 3px;
   line-height: normal;
   white-space: normal; /* Permitimos que el texto se divida si es necesario */
-  margin-left: 20px; /* Espacio a la izquierda del logo */
+  /* margin-left: 20px; /* Ya no es necesario */
 }
 
 .pgina-principal .text-wrapper-15 {
   /* 5. Estilos para el Subtítulo */
   font-family: "Impact-Regular", Helvetica;
   font-weight: 400;
-  color: #a6a6a6;
+  color: #ffffff;
   font-size: clamp(0.7rem, 1.2vw, 1rem); /* Reducido */
   letter-spacing: 1.5px;
   line-height: normal;
-  margin-left: 25px; /* Espacio a la izquierda del título */ 
-  white-space: nowrap;
+  /* margin-left: 25px; /* Ya no es necesario */
+  white-space: normal; /* Permitimos que se divida */
 }
